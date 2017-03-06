@@ -1,0 +1,19 @@
+{
+  "name": "northwest",
+  "version": "1.0.0",
+  "description": "shines a warm, north westerly light on your javascript app",
+  "author": "rohandeshpande",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^2.5.6",
+    "nw": "^0.20.3",
+    "nw-builder": "^3.2.0"
+  },
+  "scripts": {
+    "npm-seed": "./scripts/npm-seed",
+    "git-seed": "./scripts/git-seed",
+    "unseed": "./scripts/unseed",
+    "start": "nw app"
+  },
+  "main": "index.js"
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+repo=$1
+mkdir -p app/src
+cd app/src && git clone $repo .
+echo "$repo seeded!"
