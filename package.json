@@ -5,14 +5,13 @@
   "author": "rohandeshpande",
   "license": "MIT",
   "dependencies": {
-    "ejs": "^2.5.6",
     "nw": "0.20.3-sdk",
     "nw-builder": "^3.2.0"
   },
   "scripts": {
-    "npm-seed": "./scripts/npm-seed",
-    "git-seed": "./scripts/git-seed",
-    "unseed": "./scripts/unseed",
+    "seed-npm": "./scripts/seed-npm",
+    "seed-git": "./scripts/seed-git",
+    "seed-die": "./scripts/seed-die",
     "start": "nw app"
   },
   "main": "index.js"
