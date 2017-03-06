@@ -3,24 +3,21 @@
 <head>
     <meta charset="utf-8">
     <title>
-        northwest
+        Northwest
     </title>
     <meta name="viewport" content="width=device-width,initial-scale=0.5,maximum-scale=1,user-scalable=yes"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="stylesheet" type="text/css" href="src/bundle.css">
+    <link rel="stylesheet" type="text/css" href="">
 </head>
 <body unselectable="on" >
     <main id='root'>
         Let the light guide you north, then west. There you will find solace.
     </main>
-    <script>
-        const fs = require('fs');
-        const watcher = fs.watch("src/bundle.js", () => {
-            location.reload();
-            watcher.close();
-        });
-    </script>
-    <script type="text/javascript" src="src/bundle.js"></script>
+    <script src="utils/fs.js"></script>
+    <script src="utils/watch.js"></script>
+    <script src="utils/win.js"></script>
+    <script> watch("src/test.js") </script>
+    <script type="text/javascript" src="src/test.js"></script>
 </body>
 </html>
