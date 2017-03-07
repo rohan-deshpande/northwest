@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+const dir = process.argv[2];
+const app = dir + "/app";
+const fs = require('fs');
+const copydir = require('copy-dir');
+
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+}
+
+fs.mkdirSync(app);
+copydir.sync('template', app );
+
+console.log("your northwest app '" + dir + "' has been built");
