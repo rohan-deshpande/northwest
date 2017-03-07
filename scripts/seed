@@ -1,0 +1,78 @@
+#!/usr/bin/env node
+var fs = require('fs');
+var copydir = require('copy-dir');
+var shell = require('shelljs')
+var src = "app/src";
+var platform = process.argv[2];
+var seed = process.argv[3];
+
+if (!seed) {
+    throw new Error("You must provide a seed");
+}
+
+if (!fs.existsSync(src)) {
+    fs.mkdirSync(src);
+}
+
+console.log('Seeding...');
+
+/**
+ * Seeds the src directory from a git repository.
+ *
+ * @param {string} seed - the repo to fetch
+ * @return void
+ */
+const seedFromGit = function (seed) {
+    shell.exec(`
+        git clone ${seed} app/src/. &&
+        cd app/src &&
+        find . | grep .git | xargs rm -rf;
+    `);
+}
+
+/**
+ * Seeds the src from an npm package.
+ *
+ * @param {string} seed - the npm package to seed from
+ * @return void
+ */
+const seedFromNpmPackage = function (seed) {
+    shell.exec(`
+        cd app/src &&
+        npm init -f &&
+        npm i ${seed}
+    `);
+}
+
+/**
+ * Seeds the src from a global command.
+ *
+ * @param {string} seed - the npm command to seed from
+ * @return void
+ */
+const seedFromCommand = function (seed) {
+    shell.exec(`
+        cd app/src &&
+        ${seed}
+    `);
+}
+
+switch (platform) {
+    case "git":
+        seedFromGit(seed);
+        break;
+
+    case "package":
+        seedFromNpmPackage(seed);
+        break;
+
+    case "cmd":
+        seedFromCommand(seed);
+        break;
+
+    default:
+        throw new Error("Platform invalid or unrecognised, please check the docs for allowed seed platforms.")
+        break;
+}
+
+console.log('Seeded!');

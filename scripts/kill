@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+var shell = require('shelljs');
+
+console.log('Unseeding...');
+
+shell.exec('rm -rf app/src');
+
+console.log('Unseeded');

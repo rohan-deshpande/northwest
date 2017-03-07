@@ -1,14 +1,17 @@
 #!/usr/bin/env node
-const dir = process.argv[2];
-const app = dir + "/app";
-const fs = require('fs');
-const copydir = require('copy-dir');
+var dir = process.argv[2];
+var app = dir + "/app";
+var fs = require('fs');
+var copydir = require('copy-dir');
+var shell = require('shelljs');
 
 if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
 }
 
-fs.mkdirSync(app);
-copydir.sync('template', app );
+console.log(`building '${dir}'...`);
 
-console.log("your northwest app '" + dir + "' has been built");
+copydir.sync('./template', dir);
+shell.exec(`cd ${dir} && npm i`);
+
+console.log(`northwest app '${dir}' built`);

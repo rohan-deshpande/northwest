@@ -1,0 +1,15 @@
+{
+  "main": "index.html",
+  "name": "Northwest",
+  "window": {
+    "title": "northwest",
+    "icon": "link.png",
+    "frame": true,
+    "width": 1024,
+    "height": 768,
+    "position": "center"
+  },
+  "webkit": {
+    "plugin": true
+  }
+}

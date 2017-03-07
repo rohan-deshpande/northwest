@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-rm -rf app/src
-mkdir app/src
-echo "app unseeded"

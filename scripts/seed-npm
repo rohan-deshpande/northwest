@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-package=$1
-mkdir -p app/src
-cd app/src && npm init -f && npm i $package --save
-echo "$package seeded!"

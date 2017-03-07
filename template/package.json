@@ -1,15 +1,16 @@
 {
-  "main": "index.html",
-  "name": "Northwest",
-  "window": {
-    "title": "northwest",
-    "icon": "link.png",
-    "frame": true,
-    "width": 1024,
-    "height": 768,
-    "position": "center"
+  "name": "northwest-app",
+  "version": "1.0.0",
+  "description": "my northwest nwjs app",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "nw": "0.20.3-sdk",
+    "nw-builder": "^3.2.0"
   },
-  "webkit": {
-    "plugin": true
+  "scripts": {
+    "build": "northwest build",
+    "seed": "northwest seed",
+    "start": "nw app"
   }
 }

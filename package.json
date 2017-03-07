@@ -7,17 +7,9 @@
   "dependencies": {
     "copy-dir": "^0.3.0",
     "cross-spawn": "^5.1.0",
-    "nw": "0.20.3-sdk",
-    "nw-builder": "^3.2.0"
-  },
-  "scripts": {
-    "seed-npm": "./scripts/seed-npm",
-    "seed-git": "./scripts/seed-git",
-    "seed-die": "./scripts/seed-die",
-    "start": "nw app"
+    "shelljs": "^0.7.6"
   },
   "bin": {
     "northwest": "./bin/northwest"
-  },
-  "main": "index.js"
+  }
 }
