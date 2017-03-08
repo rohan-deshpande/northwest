@@ -6,7 +6,8 @@
   "license": "MIT",
   "dependencies": {
     "nw": "0.20.3-sdk",
-    "nw-builder": "^3.2.0"
+    "nw-builder": "^3.2.0",
+    "fs-extra": "^2.0.0"
   },
   "scripts": {
     "build": "northwest build",

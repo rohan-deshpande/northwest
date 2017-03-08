@@ -1,0 +1,10 @@
+{
+    "assets": {
+        "app": "static",
+        "src": "src/build/static"
+    },
+    "watch": {
+        "app": "static",
+        "src": "src/build"
+    }
+}
