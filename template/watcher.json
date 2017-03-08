@@ -1,0 +1,20 @@
+{
+    "assets": {
+        "app": {
+            "root": "static",
+            "css": "css",
+            "js": "js",
+            "media": "media"
+        },
+        "src": {
+            "root": "src/build/static",
+            "css": "css",
+            "js": "js",
+            "media": "media"
+        }
+    },
+    "watch": {
+        "app": "static",
+        "src": "src/build"
+    }
+}
