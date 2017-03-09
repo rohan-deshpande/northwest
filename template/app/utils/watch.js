@@ -1,36 +1,4 @@
-
-const watch = function () {
-    let fs = require('fs-extra');
-
-    function hotload(task) {
-
-    }
-
-    function makeAppAssetsDir(dir) {
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
-        }
-    }
-
-    function watchSrc(config) {
-
-    }
-
-    function watchApp(config) {
-        
-    }
-
-    fs.readJson('watcher.json', (err, config) => {
-        console.log(err);
-
-        makeAppAssetsDir(config.assets.app);
-        watchSrc(config);
-        watchApp(config);
-    });
-
-}
-
-var WatchTower = class WatchTower {
+const WatchTower = class WatchTower {
     constructor() {
         this.fs = require('fs-extra');
         this.fs.readJson('package.json', (err, config) => {

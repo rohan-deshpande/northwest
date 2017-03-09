@@ -2,7 +2,7 @@
 var fs = require('fs');
 var copydir = require('copy-dir');
 var shell = require('shelljs')
-var src = "app/src";
+var src = "src";
 var platform = process.argv[2];
 var seed = process.argv[3];
 
@@ -24,8 +24,8 @@ console.log('Seeding...');
  */
 const seedFromGit = function (seed) {
     shell.exec(`
-        git clone ${seed} app/src/. &&
-        cd app/src &&
+        git clone ${seed} src/. &&
+        cd src &&
         find . | grep .git | xargs rm -rf;
     `);
 }
@@ -38,7 +38,7 @@ const seedFromGit = function (seed) {
  */
 const seedFromNpmPackage = function (seed) {
     shell.exec(`
-        cd app/src &&
+        cd src &&
         npm init -f &&
         npm i ${seed}
     `);
@@ -52,7 +52,7 @@ const seedFromNpmPackage = function (seed) {
  */
 const seedFromCommand = function (seed) {
     shell.exec(`
-        cd app/src &&
+        cd src &&
         ${seed}
     `);
 }

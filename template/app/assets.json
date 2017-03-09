@@ -1,15 +1,15 @@
 {
     "assets": {
         "app": {
-            "root": "static",
+            "root": "assets",
             "css": "css",
             "js": "js",
             "media": "media"
         },
         "src": {
-            "root": "src/build/static",
-            "css": "css",
-            "js": "js",
+            "root": "http://localhost:3000",
+            "css": "",
+            "js": "/static/js/bundle.js",
             "media": "media"
         }
     },

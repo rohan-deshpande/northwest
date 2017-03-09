@@ -11,5 +11,10 @@
   },
   "webkit": {
     "plugin": true
+  },
+  "assets": {
+    "css": "",
+    "js": "",
+    "media": ""
   }
 }
