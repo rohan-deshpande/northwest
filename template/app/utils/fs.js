@@ -1,1 +1,1 @@
-const fs = require('fs');
+module.exports = require('fs-extra');

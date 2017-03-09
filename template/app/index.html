@@ -5,16 +5,17 @@
     <title>
         Northwest
     </title>
-    <link rel="stylesheet" type="text/css" href="assets/app.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/app.css">
 </head>
 <body unselectable="on" >
     <main id='root'>
         Let the light guide you to the northwest. There you will find solace.
     </main>
-    <script src="utils/fs.js"></script>
-    <script src="utils/watch.js"></script>
-    <script src="utils/win.js"></script>
-    <script> watch("assets/app.js") </script>
-    <script type="text/javascript" src="assets/app.js"></script>
+    <script src="utils/catch.js"></script>
+    <script>
+        const watcher = require('./utils/watcher.js');
+        console.log(new watcher());
+    </script>
+    <script type="text/javascript" src="assets/js/app.js"></script>
 </body>
 </html>

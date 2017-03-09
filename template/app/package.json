@@ -13,8 +13,11 @@
     "plugin": true
   },
   "assets": {
-    "css": "",
-    "js": "",
-    "media": ""
+    "app": "assets",
+    "src": {
+      "css": "",
+      "js": "",
+      "media": ""
+    }
   }
 }

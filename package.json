@@ -5,8 +5,8 @@
   "author": "rohandeshpande",
   "license": "MIT",
   "dependencies": {
-    "copy-dir": "^0.3.0",
     "cross-spawn": "^5.1.0",
+    "fs-extra": "^2.0.0",
     "shelljs": "^0.7.6"
   },
   "bin": {

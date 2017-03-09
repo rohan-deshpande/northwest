@@ -1,1 +1,1 @@
-const win = nw.Window.get();
+module.exports = nw.Window.get();

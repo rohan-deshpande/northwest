@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 var dir = process.argv[2];
 var app = dir + "/app";
-var fs = require('fs');
-var copydir = require('copy-dir');
+var fs = require('fs-extra');
 var shell = require('shelljs');
 
 if (!fs.existsSync(dir)) {
@@ -11,7 +10,12 @@ if (!fs.existsSync(dir)) {
 
 console.log(`building '${dir}'...`);
 
-copydir.sync('./template', dir);
-shell.exec(`cd ${dir} && npm i`);
+fs.copy('./template', dir, (err) => {
+    if (err) {
+        return console.log(err);
+    }
 
-console.log(`northwest app '${dir}' built`);
+    shell.exec(`cd ${dir} && npm i`);
+
+    console.log(`northwest app '${dir}' built`);
+});
