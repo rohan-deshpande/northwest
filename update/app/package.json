@@ -14,20 +14,21 @@
   },
   "assets": {
     "app": {
-      "dir": "assets",
+      "dir": "assets/",
       "css": {
-        "path": "assets/css/",
-        "name": "app.css"
+        "path": "css/",
+        "namespace": "app"
       },
       "js": {
-        "path": "assets/js/",
-        "name": "app.js"
+        "path": "js/",
+        "namespace": "app"
       }
     },
     "src": {
-      "dir": "../src/static/",
-      "css": "../src/static/css/bundle.css",
-      "js": "../src/static/js/bundle.js",
+      "bundles": {
+        "css": "../src/static/css/bundle.css",
+        "js": "../src/static/js/bundle.js"
+      },
       "media": "../src/static/media"
     }
   }

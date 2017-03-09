@@ -13,10 +13,22 @@
     "plugin": true
   },
   "assets": {
-    "app": "assets",
+    "app": {
+      "dir": "assets/",
+      "css": {
+        "path": "css/",
+        "namespace": "app"
+      },
+      "js": {
+        "path": "js/",
+        "namespace": "app"
+      }
+    },
     "src": {
-      "css": "",
-      "js": "",
+      "bundles": {
+        "css": "",
+        "js": ""
+      },
       "media": ""
     }
   }
