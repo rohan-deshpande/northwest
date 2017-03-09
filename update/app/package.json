@@ -1,0 +1,34 @@
+{
+  "main": "index.html",
+  "name": "Northwest",
+  "window": {
+    "title": "northwest",
+    "icon": "link.png",
+    "frame": true,
+    "width": 1024,
+    "height": 768,
+    "position": "center"
+  },
+  "webkit": {
+    "plugin": true
+  },
+  "assets": {
+    "app": {
+      "dir": "assets",
+      "css": {
+        "path": "assets/css/",
+        "name": "app.css"
+      },
+      "js": {
+        "path": "assets/js/",
+        "name": "app.js"
+      }
+    },
+    "src": {
+      "dir": "../src/static/",
+      "css": "../src/static/css/bundle.css",
+      "js": "../src/static/js/bundle.js",
+      "media": "../src/static/media"
+    }
+  }
+}
