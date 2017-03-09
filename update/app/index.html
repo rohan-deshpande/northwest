@@ -11,14 +11,21 @@
     <main id='root'>
         Let the light guide you to the northwest. There you will find solace.
     </main>
-    <script src="utils/catch.js"></script>
-    <script src="utils/win.js"></script>
-    <script src="utils/watcher.js"></script>
+    <script src="nw/catch.js"></script>
+    <script src="nw/gui.js"></script>
+    <script src="nw/path.js"></script>
+    <script src="nw/fs.js"></script>
+    <script src="nw/watcher.js"></script>
     <script>
-        win.showDevTools();
-        const Watcher = new watcher();
+        require('dotenv').config();
 
-        console.log(Watcher);
+        const ENV_DEV = (process.env.NW_ENV === 'DEVELOPMENT');
+        const ENV_PROD = (process.env.NW_ENV === 'PRODUCTION');
+        const ENV_DEBUG = (process.env.NW_ENV === 'DEBUG');
+
+        if (ENV_DEV) {
+            const NW_WATCHER = new nw.NorthwestWatcher();
+        }
     </script>
     <script type="text/javascript" src="assets/js/app.js"></script>
 </body>

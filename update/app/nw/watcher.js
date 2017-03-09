@@ -1,4 +1,4 @@
-const watcher = class watcher {
+nw.NorthwestWatcher = class NorthwestWatcher {
     constructor(config = 'package.json') {
         this.fs = require('fs-extra');
         this.watch = require('glob-watcher');
