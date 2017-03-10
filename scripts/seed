@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 var fs = require('fs');
-var copydir = require('copy-dir');
 var shell = require('shelljs')
 var src = "src";
 var platform = process.argv[2];
@@ -53,6 +52,7 @@ const seedFromNpmPackage = function (seed) {
 const seedFromCommand = function (seed) {
     shell.exec(`
         cd src &&
+        rm -rf readme.md &&
         ${seed}
     `);
 }

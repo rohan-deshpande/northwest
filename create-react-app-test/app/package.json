@@ -1,5 +1,6 @@
 {
-  "main": "index.html",
+  "main": "http://localhost:3000/",
+  "node-remote": "http://localhost:3000/*",
   "name": "Northwest",
   "window": {
     "title": "northwest",

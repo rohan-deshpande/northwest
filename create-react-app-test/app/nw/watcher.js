@@ -28,23 +28,10 @@ const Watcher = class Watcher {
             return;
         }
 
-        if (file.includes('http')) {
-            this.watchRemoteFile(file, dest);
-            return;
-        }
-
         this.watch(file).on('change', (path, stat) => {
             this.fs.copy(path, dest, (err) => {
                 if (err) console.log(err);
             });
-        });
-    }
-
-    watchRemoteFile(location, dest) {
-        this.request(location, (error, response, body) => {
-            this.fs.writeFile(dest, body, (err) => {
-                if (err) console.log(err);
-            })
         });
     }
 
