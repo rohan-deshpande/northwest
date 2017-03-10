@@ -3,6 +3,7 @@ const Watcher = class Watcher {
         this.fs = require('fs-extra');
         this.watch = require('glob-watcher');
         this.path = require('path');
+        this.request = require('request');
 
         this.fs.readJson(config, (err, contents) => {
             if (err) return console.log(err);
@@ -27,10 +28,23 @@ const Watcher = class Watcher {
             return;
         }
 
+        if (file.includes('http')) {
+            this.watchRemoteFile(file, dest);
+            return;
+        }
+
         this.watch(file).on('change', (path, stat) => {
             this.fs.copy(path, dest, (err) => {
                 if (err) console.log(err);
             });
+        });
+    }
+
+    watchRemoteFile(location, dest) {
+        this.request(location, (error, response, body) => {
+            this.fs.writeFile(dest, body, (err) => {
+                if (err) console.log(err);
+            })
         });
     }
 
@@ -72,11 +86,12 @@ const Watcher = class Watcher {
         let dest = {
             css: `${app.dir}${app.css.path}${app.css.namespace}.css`,
             js: `${app.dir}${app.js.path}${app.js.namespace}.js`,
-            media: `${app.dir}/`
+            resources: `${app.dir}/`
         }
-        let css = this.watchFile(this.src.bundles.css, dest.css);
-        let js = this.watchFile(this.src.bundles.js, dest.js);
-        let media = this.watchDir(this.src.media, dest.media);
+
+        this.watchFile(this.src.bundles.css, dest.css);
+        this.watchFile(this.src.bundles.js, dest.js);
+        this.watchDir(this.src.resources, dest.resources);
 
         return this;
     }

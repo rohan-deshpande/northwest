@@ -1,5 +1,5 @@
 {
-  "main": "index.html",
+  "main": "http://localhost:3000",
   "name": "Northwest",
   "window": {
     "title": "northwest",
@@ -27,9 +27,9 @@
     "src": {
       "bundles": {
         "css": "../src/static/css/bundle.css",
-        "js": "../src/static/js/bundle.js"
+        "js": "../src/static/css/bundle.js"
       },
-      "media": "../src/static/media"
+      "resources": "../src/static/media"
     }
   }
 }
