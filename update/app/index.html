@@ -15,18 +15,7 @@
     <script src="nw/gui.js"></script>
     <script src="nw/path.js"></script>
     <script src="nw/fs.js"></script>
-    <script>
-        require('dotenv').config();
-
-        const ENV_DEV = (process.env.NW_ENV === 'DEVELOPMENT');
-        const ENV_PROD = (process.env.NW_ENV === 'PRODUCTION');
-        const ENV_DEBUG = (process.env.NW_ENV === 'DEBUG');
-
-        if (ENV_DEV) {
-            const NW_WATCHER = require('./nw/watcher.js');
-            console.log(NW_WATCHER);
-        }
-    </script>
+    <script src="nw/env.js"></script>
     <script type="text/javascript" src="assets/js/app.js"></script>
 </body>
 </html>
