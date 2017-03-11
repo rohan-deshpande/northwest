@@ -10,7 +10,7 @@ const NW_CATCH = () => {
     });
 }
 
-module.exports = {
+export default {
     nw: NW,
     gui: NW_GUI,
     win: NW_WIN,

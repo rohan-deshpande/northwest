@@ -1,8 +1,11 @@
 #!/usr/bin/env node
-var shell = require('shelljs');
+'use strict';
 
-console.log('Unseeding...');
+const shell = require('shelljs');
+const chalk = require('chalk');
 
-shell.exec('rm -rf app/src');
+console.log(chalk.magenta('Unseeding...'));
 
-console.log('Unseeded');
+shell.exec('rm -rf src/*');
+
+console.log(chalk.magenta('Unseeded'));

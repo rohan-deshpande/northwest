@@ -1,1 +1,1 @@
-// default js stub
+/** default js stub **/

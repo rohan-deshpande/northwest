@@ -1,19 +1,42 @@
 #!/usr/bin/env node
-var fs = require('fs');
-var shell = require('shelljs')
-var src = "src";
-var platform = process.argv[2];
-var seed = process.argv[3];
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const shell = require('shelljs');
+const chalk = require('chalk');
+const src = "src";
+const platform = process.argv[2];
+const seed = process.argv[3];
 
 if (!seed) {
-    throw new Error("You must provide a seed");
+    throw new Error(chalk.bgRed("You must provide a seed"));
 }
 
 if (!fs.existsSync(src)) {
     fs.mkdirSync(src);
 }
 
-console.log('Seeding...');
+console.log(chalk.bgGreen(chalk.black('Seeding…')));
+
+const preSeed = (callback) => {
+    shell.exec(`
+        cd src &&
+        rm -rf nw;
+    `);
+
+    callback();
+}
+
+const postSeed = () => {
+    fs.readFile(path.resolve(__dirname, '..', './template/src/nw/index.js'), 'utf8', (err, contents) => {
+        shell.exec(`
+            cd src &&
+            mkdir nw
+            echo '${contents}' > nw/index.js;
+        `);
+    });
+}
 
 /**
  * Seeds the src directory from a git repository.
@@ -21,12 +44,13 @@ console.log('Seeding...');
  * @param {string} seed - the repo to fetch
  * @return void
  */
-const seedFromGit = function (seed) {
-    shell.exec(`
+const seedFromGit = (seed) => {
+    preSeed(() => shell.exec(`
         git clone ${seed} src/. &&
         cd src &&
-        find . | grep .git | xargs rm -rf;
-    `);
+        find . | grep .git | xargs rm -rf &&
+        cd ../;
+    `));
 }
 
 /**
@@ -35,12 +59,13 @@ const seedFromGit = function (seed) {
  * @param {string} seed - the npm package to seed from
  * @return void
  */
-const seedFromNpmPackage = function (seed) {
-    shell.exec(`
+const seedFromNpmPackage = (seed) => {
+    preSeed(() => shell.exec(`
         cd src &&
-        npm init -f &&
-        npm i ${seed}
-    `);
+        npm init -y &&
+        npm i -S ${seed} &&
+        cd ../;
+    `));
 }
 
 /**
@@ -49,12 +74,8 @@ const seedFromNpmPackage = function (seed) {
  * @param {string} seed - the npm command to seed from
  * @return void
  */
-const seedFromCommand = function (seed) {
-    shell.exec(`
-        cd src &&
-        rm -rf readme.md &&
-        ${seed}
-    `);
+const seedFromCommand = (seed) => {
+    preSeed(() => shell.exec(`${seed};`));
 }
 
 switch (platform) {
@@ -62,7 +83,7 @@ switch (platform) {
         seedFromGit(seed);
         break;
 
-    case "package":
+    case "npm":
         seedFromNpmPackage(seed);
         break;
 
@@ -71,8 +92,10 @@ switch (platform) {
         break;
 
     default:
-        throw new Error("Platform invalid or unrecognised, please check the docs for allowed seed platforms.")
+        throw new Error(chalk.bgRed("Platform invalid or unrecognised, please check the docs for allowed seed platforms."))
         break;
 }
 
-console.log('Seeded!');
+postSeed();
+
+console.log(chalk.bgGreen(chalk.black('Seeded!')));

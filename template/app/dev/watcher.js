@@ -1,15 +1,25 @@
+/**
+ * Watcher class for watching your src and hotloading the app.
+ *
+ */
 const Watcher = class Watcher {
-    constructor(config = 'package.json') {
+
+    /**
+     * Constructs a new watcher instance, reads the supplied config and begins watching / hotloading.
+     *
+     * @param {string} [config] - the config to load, defaults to watch.json
+     * @return {object} Watcher
+     */
+    constructor(config = 'watch.json') {
         this.fs = require('fs-extra');
         this.watch = require('glob-watcher');
         this.path = require('path');
-        this.request = require('request');
 
         this.fs.readJson(config, (err, contents) => {
             if (err) return console.log(err);
 
-            this.src = contents.assets.src;
-            this.app = contents.assets.app;
+            this.src = contents.src;
+            this.app = contents.app;
 
             this.watchSrc().watchApp();
         });
