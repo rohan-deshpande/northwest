@@ -6,7 +6,7 @@ var result;
 
 
 switch (script) {
-    case 'build':
+    case 'make':
     case 'seed':
     // @NOTE use with caution! will compvarely remove your src directory.
     case 'kill':

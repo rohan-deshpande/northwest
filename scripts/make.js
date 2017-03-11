@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 'use strict';
 
 const fs = require('fs-extra');
@@ -11,16 +12,13 @@ const jsonify = (o) => JSON.stringify(o, null, 2);
 const basePackage = {
     "main": "index.html",
     "name": dir,
+    "version": "0.0.1",
     "window": {
         "title": dir,
-        "icon": "link.png",
         "frame": true,
         "width": 1024,
         "height": 768,
         "position": "center"
-    },
-    "webkit": {
-        "plugin": true
     }
 };
 const watchJson = jsonify({
@@ -54,7 +52,7 @@ if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
 }
 
-console.log(chalk.inverse(`Building ${chalk.bold(dir)}, please wait, this might take a while…`));
+console.log(chalk.inverse(`Making ${chalk.bold(dir)}, please wait, this might take a while…`));
 
 fs.copy('./template', dir, (err) => {
     if (err) {
@@ -71,6 +69,6 @@ fs.copy('./template', dir, (err) => {
         echo '${packageJson}' > package.json
     `);
 
-    console.log(chalk.cyan(`Northwest app ${chalk.bold(dir)} built!`));
+    console.log(chalk.cyan(`Northwest app ${chalk.bold(dir)} made!`));
     console.log(chalk.cyan(`To seed your app with the JavaScript boilerplate of your choice, just ${chalk.italic('cd')} ${chalk.italic(dir)} and run ${chalk.italic('northwest seed')} passing the platform and seed of your choice. Check the docs for more info.`));
 });

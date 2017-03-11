@@ -6,14 +6,15 @@
   "license": "MIT",
   "dependencies": {
     "nw": "0.20.3-sdk",
-    "nw-builder": "^3.2.0",
+    "nwjs-builder": "^1.14.0",
     "fs-extra": "^2.0.0",
-    "glob-watcher": "^3.1.0",
-    "dotenv": "^4.0.0"
+    "glob-watcher": "^3.1.0"
   },
   "scripts": {
-    "build": "northwest build",
+    "make": "northwest make",
     "seed": "northwest seed",
-    "start": "nw app"
+    "dev": "nw app/dev",
+    "prod": "nw app/prod",
+    "build": "./node_modules/.bin/nwb nwbuild ./app/prod -o ./build"
   }
 }

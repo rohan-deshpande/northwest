@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 'use strict';
 
 const fs = require('fs');
@@ -19,6 +20,12 @@ if (!fs.existsSync(src)) {
 
 console.log(chalk.bgGreen(chalk.black('Seeding…')));
 
+/**
+ * Pre seeding setup. Removes the nw module from the src directory so it can be written to.
+ *
+ * @param {function} callback
+ * @return void
+ */
 const preSeed = (callback) => {
     shell.exec(`
         cd src &&
@@ -28,6 +35,11 @@ const preSeed = (callback) => {
     callback();
 }
 
+/**
+ * Post seed winding up. Ensures the nw module is placed in the src directory of the seed.
+ *
+ * @return void
+ */
 const postSeed = () => {
     fs.readFile(path.resolve(__dirname, '..', './template/src/nw/index.js'), 'utf8', (err, contents) => {
         shell.exec(`

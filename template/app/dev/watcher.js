@@ -1,11 +1,11 @@
 /**
- * Watcher class for watching your src and hotloading the app.
+ * Watcher class for watching your src and reloading the app.
  *
  */
 const Watcher = class Watcher {
 
     /**
-     * Constructs a new watcher instance, reads the supplied config and begins watching / hotloading.
+     * Constructs a new watcher instance, reads the supplied config and begins watching / reloading.
      *
      * @param {string} [config] - the config to load, defaults to watch.json
      * @return {object} Watcher
@@ -94,13 +94,13 @@ const Watcher = class Watcher {
     }
 
     /**
-     * Watches the provided app directory and calls the hotload method.
+     * Watches the provided app directory and calls the reload method.
      *
      * @return {object} watcher
      */
     watchApp() {
         let task = this.fs.watch(this.app.dir, (eventType, filename) => {
-            this.hotload(task);
+            this.reload(task);
         });
 
         return this;
@@ -112,7 +112,7 @@ const Watcher = class Watcher {
      * @param {object} task - the task that caused the reload
      * @return void
      */
-    hotload(task) {
+    reload(task) {
         location.reload();
         task.close();
     }
