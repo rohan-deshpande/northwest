@@ -6,9 +6,16 @@ const fs = require('fs');
 const path = require('path');
 const shell = require('shelljs');
 const chalk = require('chalk');
+const spawn = require('cross-spawn');
+const assign = require('lodash.assign');
 const src = "src";
 const platform = process.argv[2];
 const seed = process.argv[3];
+const allowedCommands = [
+    'create-react-app',
+    'vue',
+    'ng',
+];
 
 if (!seed) {
     throw new Error(chalk.bgRed("You must provide a seed"));
@@ -87,7 +94,38 @@ const seedFromNpmPackage = (seed) => {
  * @return void
  */
 const seedFromCommand = (seed) => {
-    preSeed(() => shell.exec(`${seed};`));
+    preSeed(() => {
+        const cmd = seed.split(" ");
+        const result = spawn.sync(
+            ensureAllowed(cmd.shift()),
+            cmd,
+            { stdio: 'inherit' }
+        );
+    });
+}
+
+/**
+ * Checks to see if a command is allowed.
+ *
+ * @param {string} cmd - the command to check
+ * @return {boolean}
+ */
+const ensureAllowed = (cmd) => {
+    if (allowedCommands.indexOf(cmd) > -1) {
+        return cmd;
+    }
+
+    console.error(chalk.bgRed(`The command ${chalk.italic(cmd)} is not currently whitelisted, please open a PR if you'd like it to be allowed`));
+    process.exit(1);
+}
+
+/**
+ * Checks to see if operating system is windows.
+ *
+ * @return bool
+ */
+const isWin = () => {
+    return require('os').platform().indexOf('win') > -1;
 }
 
 switch (platform) {
@@ -104,7 +142,8 @@ switch (platform) {
         break;
 
     default:
-        throw new Error(chalk.bgRed("Platform invalid or unrecognised, please check the docs for allowed seed platforms."))
+        console.error(chalk.bgRed("Platform invalid or unrecognised, please check the docs for allowed seed platforms."));
+        process.exit(1);
         break;
 }
 
