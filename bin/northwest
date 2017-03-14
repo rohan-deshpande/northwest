@@ -8,7 +8,6 @@ switch (script) {
     case 'make':
     case 'seed':
     case 'dev':
-    case 'release':
     // @NOTE use with caution! will completely remove your src directory.
     case 'kill':
         result = spawn.sync(

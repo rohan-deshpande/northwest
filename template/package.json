@@ -13,8 +13,7 @@
   "scripts": {
     "make": "northwest make",
     "seed": "northwest seed",
-    "dev": "nw app/dev",
-    "prod": "nw app/prod",
-    "build": "./node_modules/.bin/nwb nwbuild ./app/prod -o ./build"
+    "dev": "northwest dev",
+    "release": "nwb nwbuild ./app -o ./releases"
   }
 }
