@@ -4,11 +4,12 @@ var script = process.argv[2];
 var args = process.argv.slice(3);
 var result;
 
-
 switch (script) {
     case 'make':
     case 'seed':
-    // @NOTE use with caution! will compvarely remove your src directory.
+    case 'dev':
+    case 'release':
+    // @NOTE use with caution! will completely remove your src directory.
     case 'kill':
         result = spawn.sync(
             'node',
