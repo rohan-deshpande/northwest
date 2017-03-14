@@ -24,7 +24,24 @@ const defaults = {
 }
 const args = process.argv;
 const argsNum = args.length;
-const parseArgs = () => {
+
+/**
+ * Outputs the error to the console and exits the process.
+ *
+ * @param {string} err - the error message to display
+ * @return void
+ */
+function die(err) {
+    console.error(chalk.bgRed(err));
+    process.exit(0);
+}
+
+/**
+ * Parses the process.argv arguments. Starts parsing from arg index 2.
+ *
+ * @return {object} settings - an object containing settings for dev
+ */
+function parseArgs() {
     let settings = defaults;
 
     if (argsNum === 2) {
@@ -37,8 +54,7 @@ const parseArgs = () => {
         let argValue = arg[1];
 
         if (allowed.indexOf(argKey) < 0) {
-            console.error(chalk.bgRed(`The argument ${chalk.italic(argKey)} is invalid`));
-            process.exit(0);
+            die(chalk.bgRed(`The argument ${chalk.italic(argKey)} is invalid`));
         }
 
         switch (argKey) {
@@ -67,21 +83,44 @@ const parseArgs = () => {
 
     return settings;
 };
-const getManifest = (callback) => {
+
+/**
+ * Reads the manifest.json file and passes its contents to the callback.
+ *
+ * @param {function} callback - callback to execute after the json is read
+ */
+function readManifest(callback) {
     fs.readJson('manifest.json', 'utf8', (err, contents) => {
         if (err) {
-            console.error(chalk.bgRed('Unable to read manifest.json file'));
-            process.exit(0);
+            die(chalk.bgRed('Unable to read manifest.json file'))
         }
 
         callback(contents);
     });
 };
 
-const dev = () => {
+/**
+ * Spawns the nw process and passes the app directory to it.
+ *
+ * @return void
+ */
+function nw() {
+    spawn.sync(
+        'nw',
+        ['app'],
+        { stdio: 'inherit' }
+    );
+}
+
+/**
+ * Uses settings to configure the dev enviornment.
+ *
+ * @return void
+ */
+function dev() {
     const settings = parseArgs();
 
-    getManifest((manifest) => {
+    readManifest((manifest) => {
         manifest['main'] = settings.main || manifest.main;
         manifest['node-remote'] = (manifest.main.includes('http')) ? `${manifest.main}/*` : '<all_urls>';
         manifest['version'] = settings.version || manifest.version;
@@ -89,20 +128,17 @@ const dev = () => {
         fs.writeJson('manifest.json', manifest);
         fs.writeJson('app/package.json', manifest, (err) => {
             if (err) {
-                console.error(chalk.bgRed('Unable to write package.json file'));
-                process.exit(0);
+                die(err);
             }
 
             ejs.renderFile('index.ejs', {css: settings.css, js: settings.js}, (err, html) => {
                 if (err) {
-                    console.error(chalk.bgRed(err));
-                    process.exit(0);
+                    die(err)
                 }
 
                 fs.outputFile('app/index.html', html, (err) => {
                     if (err) {
-                        console.error(chalk.bgRed(err));
-                        process.exit(0);
+                        die(err);
                     }
 
                     nw();
@@ -111,13 +147,5 @@ const dev = () => {
         });
     });
 };
-
-const nw = () => {
-    spawn.sync(
-        'nw',
-        ['app'],
-        { stdio: 'inherit' }
-    );
-}
 
 dev();
