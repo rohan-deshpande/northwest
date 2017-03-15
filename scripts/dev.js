@@ -4,19 +4,20 @@
 
 const ejs = require('ejs');
 const fs = require('fs-extra');
+const path = require('path');
 const chalk = require('chalk');
 const spawn = require('cross-spawn');
 const allowed = [
-    '-main',
-    '-m',
-    '-css',
-    '-c',
-    '-js',
-    '-j',
-    '-static',
-    '-st',
-    '-version',
-    '-v'
+    'main',
+    'm',
+    'css',
+    'c',
+    'js',
+    'j',
+    'static',
+    'st',
+    'version',
+    'v'
 ]
 const defaults = {
     css: 'assets/css/app.css',
@@ -33,7 +34,7 @@ const argsNum = args.length;
  */
 function die(err) {
     console.error(chalk.bgRed(err));
-    process.exit(0);
+    process.exit(1);
 }
 
 /**
@@ -58,24 +59,24 @@ function parseArgs() {
         }
 
         switch (argKey) {
-            case '-main':
-            case '-m':
+            case 'main':
+            case 'm':
                 settings.main = argValue;
                 break;
-            case '-css':
-            case '-c':
+            case 'css':
+            case 'c':
                 settings.css = argValue;
                 break;
-            case '-js':
-            case '-j':
+            case 'js':
+            case 'j':
                 settings.js = argValue;
                 break;
-            case '-static':
-            case '-st':
+            case 'static':
+            case 'st':
                 settings.static = argValue;
                 break;
-            case '-version':
-            case '-v':
+            case 'version':
+            case 'v':
                 settings.version = argValue;
                 break;
         }
@@ -90,9 +91,9 @@ function parseArgs() {
  * @param {function} callback - callback to execute after the json is read
  */
 function readManifest(callback) {
-    fs.readJson('manifest.json', 'utf8', (err, contents) => {
+    fs.readJson('app/package.json', 'utf8', (err, contents) => {
         if (err) {
-            die(chalk.bgRed('Unable to read manifest.json file'))
+            die(chalk.bgRed('Unable to read nwjs manifest'))
         }
 
         callback(contents);
@@ -121,25 +122,35 @@ function dev() {
     const settings = parseArgs();
 
     readManifest((manifest) => {
+        let dirname, dest;
+
         manifest['main'] = settings.main || manifest.main;
         manifest['node-remote'] = (manifest.main.includes('http')) ? `${manifest.main}/*` : '<all_urls>';
         manifest['version'] = settings.version || manifest.version;
 
-        fs.writeJson('manifest.json', manifest);
-        fs.writeJson('app/package.json', manifest, (err) => {
-            if (err) {
-                die(err);
-            }
+        if (settings.static) {
+            dirname = settings.static.split('/').pop();
+            dest = `app/assets/${dirname}`;
 
-            ejs.renderFile('index.ejs', {css: settings.css, js: settings.js}, (err, html) => {
-                if (err) {
-                    die(err)
-                }
+            fs.ensureDirSync(dest, (err) => {
+                if (err) die(err)
+            });
+
+            fs.copySync(settings.static, dest, (err) => {
+                if (err) die(err)
+            });
+        }
+
+        console.log('going to write to package.json');
+
+        fs.writeJson('app/package.json', manifest, (err) => {
+            if (err) die(err);
+
+            ejs.renderFile('app/index.ejs', {css: settings.css, js: settings.js}, (err, html) => {
+                if (err) die(err);
 
                 fs.outputFile('app/index.html', html, (err) => {
-                    if (err) {
-                        die(err);
-                    }
+                    if (err) die(err);
 
                     nw();
                 });

@@ -1,7 +1,7 @@
 {
   "name": "northwest",
   "version": "1.0.0",
-  "description": "shines a warm, north westerly light on your javascript app",
+  "description": "CLI & micro-framework for building NWJS apps with the JavaScript boilerplate of your choice",
   "author": "rohandeshpande",
   "license": "MIT",
   "dependencies": {
