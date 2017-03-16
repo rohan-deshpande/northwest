@@ -19,12 +19,11 @@ const allowed = [
     'version',
     'v'
 ]
-const defaults = {
-    css: 'assets/css/app.css',
-    js: 'assets/js/app.js',
-}
 const args = process.argv;
 const argsNum = args.length;
+const css = 'assets/css/app.css';
+const js = 'assets/js/app.js';
+const env = 'development';
 
 /**
  * Outputs the error to the console and exits the process.
@@ -43,7 +42,7 @@ function die(err) {
  * @return {object} settings - an object containing settings for dev
  */
 function parseArgs() {
-    let settings = defaults;
+    let settings = {};
 
     if (argsNum === 2) {
         return settings;
@@ -122,31 +121,32 @@ function dev() {
     const settings = parseArgs();
 
     readManifest((manifest) => {
-        let dirname, dest;
-
         manifest['main'] = settings.main || manifest.main;
         manifest['node-remote'] = (manifest.main.includes('http')) ? `${manifest.main}/*` : '<all_urls>';
         manifest['version'] = settings.version || manifest.version;
 
         if (settings.static) {
-            dirname = settings.static.split('/').pop();
-            dest = `app/assets/${dirname}`;
-
-            fs.ensureDirSync(dest, (err) => {
-                if (err) die(err)
-            });
-
-            fs.copySync(settings.static, dest, (err) => {
+            fs.copySync(settings.static, 'app/assets', (err) => {
                 if (err) die(err)
             });
         }
 
-        console.log('going to write to package.json');
+        if (settings.css) {
+            fs.copySync(settings.css, `app/${css}`, (err) => {
+                if (err) die(err);
+            });
+        }
+
+        if (settings.js) {
+            fs.copySync(settings.js, `app/${js}`, (err) => {
+                if (err) die(err);
+            });
+        }
 
         fs.writeJson('app/package.json', manifest, (err) => {
             if (err) die(err);
 
-            ejs.renderFile('app/index.ejs', {css: settings.css, js: settings.js}, (err, html) => {
+            ejs.renderFile('app/index.ejs', { css: css, js: js, env: env }, (err, html) => {
                 if (err) die(err);
 
                 fs.outputFile('app/index.html', html, (err) => {
