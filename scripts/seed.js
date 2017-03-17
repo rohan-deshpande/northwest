@@ -7,7 +7,6 @@ const path = require('path');
 const shell = require('shelljs');
 const chalk = require('chalk');
 const spawn = require('cross-spawn');
-const assign = require('lodash.assign');
 const src = "src";
 const platform = process.argv[2];
 const seed = process.argv[3];
@@ -19,10 +18,6 @@ const allowedCommands = [
 
 if (!seed) {
     throw new Error(chalk.bgRed("You must provide a seed"));
-}
-
-if (!fs.existsSync(src)) {
-    fs.mkdirSync(src);
 }
 
 console.log(chalk.bgGreen(chalk.black('Seeding…')));
@@ -45,6 +40,11 @@ const preSeed = (callback) => {
  */
 const postSeed = () => {
     fs.readFile(path.resolve(__dirname, './template/src/nw/index.js'), 'utf8', (err, contents) => {
+        if (err) {
+            console.error(chalk.bgRed(err));
+            process.exit(1);
+        }
+
         fs.outputFileSync('src/nw/index.js', contents);
     });
 }

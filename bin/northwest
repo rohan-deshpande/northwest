@@ -1,13 +1,17 @@
 #!/usr/bin/env node
-var spawn = require('cross-spawn');
-var script = process.argv[2];
-var args = process.argv.slice(3);
-var result;
+
+'use strict';
+
+const spawn = require('cross-spawn');
+const script = process.argv[2];
+const args = process.argv.slice(3);
+let result;
 
 switch (script) {
     case 'make':
     case 'seed':
     case 'dev':
+    case 'release':
     // @NOTE use with caution! will completely remove your src directory.
     case 'kill':
         result = spawn.sync(

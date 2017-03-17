@@ -1,7 +1,7 @@
 {
   "name": "northwest",
   "version": "1.0.0",
-  "description": "CLI & micro-framework for building NWJS apps with the JavaScript boilerplate of your choice",
+  "description": "CLI & micro-framework for building NW.js apps with the JavaScript boilerplate of your choice",
   "author": "rohandeshpande",
   "license": "MIT",
   "dependencies": {
@@ -9,7 +9,6 @@
     "cross-spawn": "^5.1.0",
     "ejs": "^2.5.6",
     "fs-extra": "^2.0.0",
-    "lodash.assign": "^4.2.0",
     "shelljs": "^0.7.6"
   },
   "bin": {
