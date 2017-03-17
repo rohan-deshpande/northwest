@@ -2,7 +2,7 @@
 
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const shell = require('shelljs');
 const chalk = require('chalk');
@@ -34,11 +34,7 @@ console.log(chalk.bgGreen(chalk.black('Seeding…')));
  * @return void
  */
 const preSeed = (callback) => {
-    shell.exec(`
-        cd src &&
-        rm -rf nw;
-    `);
-
+    fs.emptyDirSync('./src');
     callback();
 }
 
@@ -48,12 +44,8 @@ const preSeed = (callback) => {
  * @return void
  */
 const postSeed = () => {
-    fs.readFile(path.resolve(__dirname, '..', './template/src/nw/index.js'), 'utf8', (err, contents) => {
-        shell.exec(`
-            cd src &&
-            mkdir nw
-            echo '${contents}' > nw/index.js;
-        `);
+    fs.readFile(path.resolve(__dirname, './template/src/nw/index.js'), 'utf8', (err, contents) => {
+        fs.outputFileSync('src/nw/index.js', contents);
     });
 }
 
@@ -64,12 +56,22 @@ const postSeed = () => {
  * @return void
  */
 const seedFromGit = (seed) => {
-    preSeed(() => shell.exec(`
-        git clone ${seed} src/. &&
-        cd src &&
-        find . | grep .git | xargs rm -rf &&
-        cd ../;
-    `));
+    preSeed(() => {
+
+        // clone git repo
+        const result = spawn.sync(
+            'git',
+            ['clone', seed, 'src/.'],
+            { stdio: 'inherit' }
+        );
+
+        // cleanup git files
+        shell.exec(`
+            cd src &&
+            find . | grep .git | xargs rm -rf &&
+            cd ../;
+        `)
+    });
 }
 
 /**
@@ -79,12 +81,23 @@ const seedFromGit = (seed) => {
  * @return void
  */
 const seedFromNpmPackage = (seed) => {
-    preSeed(() => shell.exec(`
-        cd src &&
-        npm init -y &&
-        npm i -S ${seed} &&
-        cd ../;
-    `));
+    preSeed(() => {
+        // initialise npm
+        spawn.sync(
+            'npm',
+            ['init', '-y'],
+            { cwd: src },
+            { stdio: 'inherit' }
+        );
+
+        // auto install seed as dependency
+        spawn.sync(
+            'npm',
+            ['install', seed, '-S'],
+            { cwd: src },
+            { stdio: 'inherit' }
+        );
+    });
 }
 
 /**
@@ -96,9 +109,13 @@ const seedFromNpmPackage = (seed) => {
 const seedFromCommand = (seed) => {
     preSeed(() => {
         const cmd = seed.split(" ");
+
+        // ensure that the final argument is to seed into the src directory.
+        cmd.push('./src');
+
         const result = spawn.sync(
             ensureAllowed(cmd.shift()),
-            cmd,
+            [cmd],
             { stdio: 'inherit' }
         );
     });

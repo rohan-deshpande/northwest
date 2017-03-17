@@ -3,9 +3,7 @@
 'use strict';
 
 const fs = require('fs-extra');
-const shell = require('shelljs');
 const spawn = require('cross-spawn');
-const assign = require('lodash.assign');
 const chalk = require('chalk');
 const dir = process.argv[2];
 const app = dir + "/app";
@@ -18,16 +16,11 @@ fs.mkdirs(dir, (err) => {
         process.exit(0);
     }
 
-    fs.copy('./template', dir, (err) => {
+    fs.copy(`${__dirname}/template`, dir, (err) => {
         if (err) {
             console.error(chalk.bgRed(err));
             process.exit(0);
         }
-
-        // shell.exec(`
-        //     cd ${dir} &&
-        //     npm i;
-        // `);
 
         spawn.sync('npm', ['install'], { cwd: dir }, { stdio: 'inherit' });
         console.log(chalk.cyan(`Northwest app ${chalk.bold(dir)} made!`));

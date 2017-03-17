@@ -6,9 +6,9 @@
 
 ## Why?
 
-[NW.js](http://NW.js.io) is a great tool for releasing JavaScript apps for desktop, but it doesn't really care _how_ to build your app (nor should it!).
+[NW.js](http://nwjs.io) is a great tool for releasing JavaScript apps for desktop, but it doesn't really care _how_ to build your app (nor should it!).
 
-**Northwest** provides a way to `make` your NW.js app, and `seed` it from a source of your choice. You can currently seed from a git repository, an npm package or a whitelisted command. It also gives you some tools to `dev` with these seeds - some of which will use local development servers with live reloading, others which will simply use task runners -  into your NW.js development environment. You also get built-in scripts to `release` your app for Mac, Linux & Windows in various flavours.
+**Northwest** provides a way to `make` your NW.js app, and `seed` it from a source of your choice. You can currently seed from a git repository, an npm package or a whitelisted command. It also gives you some tools to `dev` with your chosen seed inside the NW.js app runtime giving you access to node modules and things like the user's file system. You also get built-in scripts to `release` your app for Mac, Linux & Windows in various flavours.
 
 ## Understanding NW.js
 
@@ -20,15 +20,15 @@ It's recommended that you've got at least a basic understanding of NW.js before 
 
 ## Mildly Opinionated
 
-**Northwest** is a mildly opinionated tool. It is designed for convenience and to increase productivity, but in order do to this, it makes some assumptions about your JavaScript app. Most of these can be overcome but if you're app is not setup in a certain way, it may require more tinkering to get things to work as intended. Here's a short summary of things to note:
+**Northwest** is a mildly opinionated tool. It is designed for convenience and to increase productivity, but in order to achieve this, it makes some assumptions about your JavaScript app. Most of these can be overcome but if you're app is not setup in a certain way, it may require more tinkering to get things to work as intended. Here's a short summary of things to note:
 
 * Your `seed` should have a build / compile step which will generate single files for `css` and `javascript` _or_ run development within a dev server such as [`webpack-dev-server`](https://webpack.js.org/configuration/dev-server/)
 * Your app will be able to work with packaged assets and not need to pull things in from locations which won't exist on user's systems when you `release` (unless these are loaded at runtime via requests)
-* You should probably be using [Babel](http://babeljs.io) to transpile your source code to take advantage of ES6/7 features, but this of course is not a requirement
+* You should probably be using [Babel](http://babeljs.io) to transpile your source code to take advantage of ES6/7 features, this is not a requirement, but is recommended
 
 ## Quickstart
 
-This example uses [`create-react-app`] via the `northwest seed cmd` command. You can also `seed` from a git repository or an npm package. See the [`seed`](#seed) documentation for more info.
+This example uses [`create-react-app`](https://github.com/facebookincubator/create-react-app) via the `northwest seed cmd` command. You can also `seed` from a git repository or an npm package. See the [`seed`](#seed) documentation for more info.
 
 ```
 npm install -g northwest
@@ -71,11 +71,11 @@ Stores your builds and is populated by `npm run release -- build=path/to/build`.
 
 ### `releases`
 
-Stores releases of your application for whatever operating system you specified with the `npm run release` command.
+Stores shippable releases of your application for whatever operating system you specified with the [`npm run release`](#release) command.
 
 ### `src`
 
-Your JavaScript app. Populated via the `northwest seed` command.
+Your JavaScript app. Populated via the [`northwest seed`](#seed) command.
 
 ## API
 
@@ -85,7 +85,7 @@ These commands become globally available once you `npm install -g northwest`.
 
 #### `northwest make <app-name>`
 
-eg.,
+usage:
 
 ```
 northwest make my-app
@@ -95,7 +95,14 @@ This command makes your NW.js app with the scaffolding described in the [structu
 
 #### `northwest seed <platform> <seed>`
 
-Seeding creates the JavaScript source for your app. You get three different ways in which to seed your app, all of which will populate your `src` directory with the desired source files. You will also have a module, `Nw` placed in the `src` directory which can be included by your source however you choose to gain access to node & NW.js objects and methods.
+usage:
+
+```
+cd my-app
+northwest seed git https://github.com/lukewilde/phaser-js-boilerplate
+```
+
+Seeding creates the JavaScript source for your app. You get three different ways in which to seed your app, all of which will populate your `src` directory with the desired source files. You will also have a module, `Nw` placed in the `src` directory which can be imported by your seed to gain access to node & NW.js objects and methods. Check the 
 
 ##### Arguments
 
@@ -109,13 +116,13 @@ This argument defines the platform which you will seed from, there are three cho
 
 `<seed>`
 
-The repository, package or command you wish to seed from. In the case of using commands to seed, you can only choose from the following supported commands
+The repository (url), package (npm package name) or command you wish to seed from. In the case of using commands to seed, you can only choose from the following supported commands
 
 * `create-react-app`
 * `vue`
 * `ng`
 
-If you would like more commands to be supported, please make an issue or open a PR. 
+If you would like more commands to be supported, please open a PR. 
 
 ### Scripts
 
@@ -132,6 +139,8 @@ Each argument needs to be appended after `npm run dev --`, delimited by spaces a
 ```
 npm run dev -- main=index.html static=../src/media
 ```
+
+Arguments which affect the manifest will be saved and do not need to be passed again when running `dev`.
 
 * `main`, `m`
     * Sets the `main` property of the app's manifest. Must be a path to an `index.html` file or URL to a location serving one. If you set this to a URL, the `node-remote` of your manifest file will also be set to `<url>/*`. Defaults to `index.html`
