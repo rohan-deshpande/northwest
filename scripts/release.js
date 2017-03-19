@@ -6,7 +6,6 @@ const fs = require('fs-extra');
 const path = require('path');
 const chalk = require('chalk');
 const spawn = require('cross-spawn');
-const shell = require('shelljs');
 const args = process.argv;
 const argsNum = args.length;
 const manifest = './app/package.json';
@@ -22,14 +21,10 @@ let name, version, releaseDir, settings;
  * @return {object} settings - the command settings
  */
 function getSettings(releaseDir) {
-    let settings = {
+    settings = {
         app: './app',
-        nwbuild: [
-            '-p',
-            'win64,osx64,linux64',
-            '-o',
-            releaseDir
-        ]
+        main: 'index.html',
+        nwbuild: []
     };
 
     if (argsNum === 2) {
@@ -45,6 +40,9 @@ function getSettings(releaseDir) {
             case "app":
                 settings.app = argValue;
                 break;
+            case "main":
+                settings.main = argValue;
+                break;
             case "nwbuild":
                 settings.nwbuild = argValue.split(' ');
                 break;
@@ -52,29 +50,43 @@ function getSettings(releaseDir) {
     }
 
     // ensure that output directory is always the release directory
-    settings.nwBuild.push('-o');
-    settings.nwBuild.push(releaseDir);
+    settings.nwbuild.push('-o');
+    settings.nwbuild.push(releaseDir);
 
     return settings;
 }
 
+/**
+ * Reads the manifest file and passes the results to the callback.
+ *
+ * @param {function} callback
+ * @return void
+ */
 function readManifest(callback) {
-    console.log(manifest);
     fs.readJson(manifest, 'utf8', (err, contents) => {
         callback(contents);
     });
 }
 
+/**
+ * Releases the app for the specified platforms
+ *
+ * @param {object} manifest - the manifest object
+ * @return void
+ */
 function release(manifest) {
     name = manifest.name;
     version = manifest.version;
     releaseDir = `${releasesDir}/${version}`;
     settings = getSettings(releaseDir);
 
+    // mutate the manifest main to be index.html by default when releasing.
+    manifest.main = settings.main;
+
     // ensure that releases directory exists.
     fs.ensureDirSync(releasesDir);
 
-    // ensure that a build directory is created.
+    // ensure that a build directory is created. We'll remove this later.
     fs.ensureDirSync(buildDir);
 
     // copy the app contents to the build directory
@@ -86,19 +98,19 @@ function release(manifest) {
     // ensure the versioned release directory exists
     fs.ensureDirSync(releaseDir);
 
-    console.log(['nwbuild', buildDir].concat(settings.nwbuild).join(" "));
+    console.log(chalk.bgGreen(chalk.black(`Packaging ${chalk.bold(name)} v${version} for release…`)));
 
-    shell.exec(`
-        nwb nwbuild ${[buildDir].concat(settings.nwbuild).join(" ")}
-    `);
+    // spawn the nwb process
+    spawn.sync(
+        'nwb',
+        ['nwbuild', buildDir].concat(settings.nwbuild),
+        { stdio: 'inherit' }
+    );
 
-    // spawn.sync(
-    //     'nwb',
-    //     ['nwbuild', buildDir].concat(settings.nwbuild).join(" "),
-    //     { stdio: 'inherit' }
-    // );
-
+    // remove the temporary build directory
     fs.remove(buildDir);
+
+    console.log(chalk.bgGreen(chalk.black(`${chalk.bold(name)} v${version} has been built!`)));
 }
 
 readManifest(manifest => release(manifest));

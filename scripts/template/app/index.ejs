@@ -12,14 +12,14 @@
         Journey to the north west child, there, you will find solace.
     </main>
     <% if (env === 'development') { %>
-        <script>
-                (function () {
-                    const fs = require('fs');
-                    const reload = () => window.location.reload();
-                    fs.watch('<%= css %>', (err) => reload());
-                    fs.watch('<%= js %>', (err) => reload());
-                }());
-        </script>
+    <script>
+            (function () {
+                const fs = require('fs');
+                const reload = () => window.location.reload();
+                fs.watch('<%= css %>', (err) => reload());
+                fs.watch('<%= js %>', (err) => reload());
+            }());
+    </script>
     <% } %>
     <script type="text/javascript" src="<%= js %>"></script>
 </body>
