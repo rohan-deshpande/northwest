@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const chalk = require('chalk');
 const spawn = require('cross-spawn');
+const shell = require('shelljs');
 const args = process.argv;
 const argsNum = args.length;
 const manifest = './app/package.json';
@@ -57,51 +58,47 @@ function getSettings(releaseDir) {
     return settings;
 }
 
-function setup(callback) {
-
-    // read and write the manifest to the build directory
+function readManifest(callback) {
+    console.log(manifest);
     fs.readJson(manifest, 'utf8', (err, contents) => {
-        if (err) {
-            die(chalk.bgRed('Unable to read manifest'))
-        }
-
-        name = contents.name;
-        version = contents.version;
-        releaseDir = `${releasesDir}/${version}`;
-        settings = getSettings(releaseDir);
-
-        // ensure that releases directory exists.
-        fs.ensureDirSync(releasesDir);
-
-        // ensure that a build directory is created.
-        fs.ensureDirSync(buildDir);
-
-        // copy the app contents to the build directory
-        fs.copySync(settings.app, buildDir);
-
-        // copy the manifest to the build directory
-        fs.outputFileSync(`${buildDir}/package.json`, contents);
-
-        // ensure the versioned release directory exists
-        fs.ensureDirSync(releaseDir);
-
         callback(contents);
     });
 }
 
-function parseNwjsBuilderArgs() {
-    if (!nwjsBuilderArgs) {
-        return [
-            '-p',
-            'win64,osx64,linux64',
-            '-o',
-            releaseDir
-        ];
-    }
+function release(manifest) {
+    name = manifest.name;
+    version = manifest.version;
+    releaseDir = `${releasesDir}/${version}`;
+    settings = getSettings(releaseDir);
 
-    return
+    // ensure that releases directory exists.
+    fs.ensureDirSync(releasesDir);
+
+    // ensure that a build directory is created.
+    fs.ensureDirSync(buildDir);
+
+    // copy the app contents to the build directory
+    fs.copySync(settings.app, buildDir);
+
+    // copy the manifest to the build directory
+    fs.outputJsonSync(`${buildDir}/package.json`, manifest);
+
+    // ensure the versioned release directory exists
+    fs.ensureDirSync(releaseDir);
+
+    console.log(['nwbuild', buildDir].concat(settings.nwbuild).join(" "));
+
+    shell.exec(`
+        nwb nwbuild ${[buildDir].concat(settings.nwbuild).join(" ")}
+    `);
+
+    // spawn.sync(
+    //     'nwb',
+    //     ['nwbuild', buildDir].concat(settings.nwbuild).join(" "),
+    //     { stdio: 'inherit' }
+    // );
+
+    fs.remove(buildDir);
 }
 
-function release() {
-
-}
+readManifest(manifest => release(manifest));
