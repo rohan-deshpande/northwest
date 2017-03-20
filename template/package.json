@@ -14,6 +14,6 @@
     "make": "northwest make",
     "seed": "northwest seed",
     "dev": "northwest dev",
-    "release": "nwb nwbuild ./app -o ./releases"
+    "release": "northwest release"
   }
 }
