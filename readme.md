@@ -50,7 +50,6 @@ app/
     {static}
   index.html
   package.json
-builds/
 releases/
 src/
 .editorconfig
@@ -61,13 +60,9 @@ README.md
 
 ### `app`
 
-Contains your [NW.js manifest](http://docs.NW.js.io/en/latest/References/Manifest%20Format/#quick-start). When you `npm run dev` this is the directory that is used, however you can configure some manifest properties while using this script, check the [dev](#dev) script for more on this. When you `npm run release` this is the directory that will be used as your build by default. Again, this is also configurable by passing flags to the `release` command, for more info checkout the [release](#release) script documentation.
+Contains your [NW.js manifest](http://docs.NW.js.io/en/latest/References/Manifest%20Format/#quick-start). When you `npm run dev` this is the default directory that is used, however you can configure some manifest properties before running NW.js when using this script, check the [dev](#dev) docs for more on this. When you `npm run release` this is the directory that will be used as your build by default. Again, this is also configurable by passing flags to the `release` command, for more info checkout the [release](#release) docs.
 
 The default `index.html` includes the `assets/css/app.css` and `assets/js/app.js` files and will watch/reload the app when these files change. If your `src` is using a task runner like `gulp` or `grunt` to build your app, you should save your compiled files to these locations.
-
-### `builds`
-
-Stores your builds and is populated by `npm run release -- build=path/to/build`. In the `northwest` sense, a build is a directory that contains all the things your NW.js app needs to run. Your NW.js manifest will be copied to the created build directory by the `release` command. Builds are named and versioned via the `name` and `version` properties in your manifest.
 
 ### `releases`
 
@@ -153,4 +148,22 @@ Arguments which affect the manifest will be saved and do not need to be passed a
 * `version`, `v`
     * The version of your app, will set the `version` property of the app's manifest. Defaults to `0.0.1`.
 
-#### `npm run release -- <arguments>`
+#### `npm run release -- <app> <manifest> <nwbuild>`
+
+This will create release candidates for the OS of your choice using the `nwjs-builder` package. 
+
+##### Arguments
+
+Each argument needs to be appended after `npm run release --`, delimited by spaces and set with `=` eg.,
+
+```
+npm run release -- app=src/build
+```
+
+If you wish to pass custom arguments to `nwjs-builder` simply append these after `nwbuild=` in the same format as their docs state eg.,
+
+```
+npm run release -- nwbuild=-p win32,win64,osx32,osx64,linux32,linux64 --executable-name "My App"
+```
+
+

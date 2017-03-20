@@ -28,7 +28,7 @@ console.log(chalk.bgGreen(chalk.black('Seeding…')));
  * @param {function} callback
  * @return void
  */
-const preSeed = (callback) => {
+function preSeed(callback) {
     fs.emptyDirSync('./src');
     callback();
 }
@@ -38,8 +38,8 @@ const preSeed = (callback) => {
  *
  * @return void
  */
-const postSeed = () => {
-    fs.readFile(path.resolve(__dirname, './template/src/nw/index.js'), 'utf8', (err, contents) => {
+function postSeed() {
+    fs.readFile(path.resolve(__dirname, '..', './template/src/nw/index.js'), 'utf8', (err, contents) => {
         if (err) {
             console.error(chalk.bgRed(err));
             process.exit(1);
@@ -55,22 +55,23 @@ const postSeed = () => {
  * @param {string} seed - the repo to fetch
  * @return void
  */
-const seedFromGit = (seed) => {
+function seedFromGit(seed) {
     preSeed(() => {
 
         // clone git repo
-        const result = spawn.sync(
+        spawn.sync(
             'git',
             ['clone', seed, 'src/.'],
             { stdio: 'inherit' }
         );
 
         // cleanup git files
-        shell.exec(`
-            cd src &&
-            find . | grep .git | xargs rm -rf &&
-            cd ../;
-        `)
+        shell.exec('find . | grep .git | xargs rm -rf;', {cwd: './src'}, (err, stdout, stderr) => {
+            if (err) {
+                console.error(chalk.bgRed(`exec error: ${error}`));
+                process.exit(1);
+            }
+        });
     });
 }
 
@@ -80,7 +81,7 @@ const seedFromGit = (seed) => {
  * @param {string} seed - the npm package to seed from
  * @return void
  */
-const seedFromNpmPackage = (seed) => {
+function seedFromNpmPackage(seed) {
     preSeed(() => {
         // initialise npm
         spawn.sync(
@@ -106,7 +107,7 @@ const seedFromNpmPackage = (seed) => {
  * @param {string} seed - the npm command to seed from
  * @return void
  */
-const seedFromCommand = (seed) => {
+function seedFromCommand(seed) {
     preSeed(() => {
         const cmd = seed.split(" ");
 
@@ -127,22 +128,13 @@ const seedFromCommand = (seed) => {
  * @param {string} cmd - the command to check
  * @return {boolean}
  */
-const ensureAllowed = (cmd) => {
+function ensureAllowed(cmd) {
     if (allowedCommands.indexOf(cmd) > -1) {
         return cmd;
     }
 
     console.error(chalk.bgRed(`The command ${chalk.italic(cmd)} is not currently whitelisted, please open a PR if you'd like it to be allowed`));
     process.exit(1);
-}
-
-/**
- * Checks to see if operating system is windows.
- *
- * @return bool
- */
-const isWin = () => {
-    return require('os').platform().indexOf('win') > -1;
 }
 
 switch (platform) {
