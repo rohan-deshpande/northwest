@@ -23,22 +23,40 @@ if (!seed) {
 console.log(chalk.bgGreen(chalk.black('Seeding…')));
 
 /**
- * Pre seeding setup. Removes the nw module from the src directory so it can be written to.
+ * Sprouts the seed. Ensures src directory is writable, runs the appropriate seed command
+ * based on the platform provided, adds the Nw module back to the src after seeding.
  *
- * @param {function} callback
  * @return void
  */
-function preSeed(callback) {
+function sprout() {
+    // ensure src directory is empty before writing to it
     fs.emptyDirSync('./src');
-    callback();
-}
 
-/**
- * Post seed winding up. Ensures the nw module is placed in the src directory of the seed.
- *
- * @return void
- */
-function postSeed() {
+    // based on the platform, fill the src directory via the right method
+    switch (platform) {
+        case "git":
+            seedFromGit(seed);
+            break;
+
+        case "npm":
+            seedFromNpmPackage(seed);
+            break;
+
+        case "cmd":
+            seedFromCommand(seed);
+            break;
+
+        default:
+            console.error(
+                chalk.bgRed(
+                    "Platform invalid or unrecognised, please check the docs for allowed seed platforms."
+                )
+            );
+            process.exit(1);
+            break;
+    }
+
+    // put the nw module back in the src directory
     fs.readFile(path.resolve(__dirname, '..', './template/src/nw/index.js'), 'utf8', (err, contents) => {
         if (err) {
             console.error(chalk.bgRed(err));
@@ -50,28 +68,45 @@ function postSeed() {
 }
 
 /**
+ * Checks to see if a command is allowed.
+ *
+ * @param {string} cmd - the command to check
+ * @return {string} cmd - the command if it was allowed
+ */
+function ensureAllowed(cmd) {
+    if (allowedCommands.indexOf(cmd) > -1) {
+        return cmd;
+    }
+
+    console.error(
+        chalk.bgRed(
+            `The command ${chalk.italic(cmd)} is not currently whitelisted, please open a PR if you'd like it to be allowed`
+        )
+    );
+    process.exit(1);
+}
+
+/**
  * Seeds the src directory from a git repository.
  *
  * @param {string} seed - the repo to fetch
  * @return void
  */
 function seedFromGit(seed) {
-    preSeed(() => {
 
-        // clone git repo
-        spawn.sync(
-            'git',
-            ['clone', seed, 'src/.'],
-            { stdio: 'inherit' }
-        );
+    // clone git repo
+    spawn.sync(
+        'git',
+        ['clone', seed, 'src/.'],
+        { stdio: 'inherit' }
+    );
 
-        // cleanup git files
-        shell.exec('find . | grep .git | xargs rm -rf;', {cwd: './src'}, (err, stdout, stderr) => {
-            if (err) {
-                console.error(chalk.bgRed(`exec error: ${error}`));
-                process.exit(1);
-            }
-        });
+    // cleanup git files
+    shell.exec('find . | grep .git | xargs rm -rf;', {cwd: './src'}, (err, stdout, stderr) => {
+        if (err) {
+            console.error(chalk.bgRed(`exec error: ${error}`));
+            process.exit(1);
+        }
     });
 }
 
@@ -82,21 +117,20 @@ function seedFromGit(seed) {
  * @return void
  */
 function seedFromNpmPackage(seed) {
-    preSeed(() => {
-        // initialise npm
-        spawn.sync(
-            'npm',
-            ['init', '-y'],
-            {  cwd: src, stdio: 'inherit' }
-        );
 
-        // auto install seed as dependency
-        spawn.sync(
-            'npm',
-            ['install', seed, '-S'],
-            { cwd: src, stdio: 'inherit' }
-        );
-    });
+    // initialise npm
+    spawn.sync(
+        'npm',
+        ['init', '-y'],
+        {  cwd: src, stdio: 'inherit' }
+    );
+
+    // auto install seed as dependency
+    spawn.sync(
+        'npm',
+        ['install', seed, '-S'],
+        { cwd: src, stdio: 'inherit' }
+    );
 }
 
 /**
@@ -106,54 +140,19 @@ function seedFromNpmPackage(seed) {
  * @return void
  */
 function seedFromCommand(seed) {
-    preSeed(() => {
-        const cmd = seed.split(" ");
+    let cmd = seed.split(" ");
 
-        // ensure that the final argument is to seed into the src directory.
-        cmd.push('./src');
+    // ensure that the final argument is to seed into the src directory.
+    cmd.push('./src');
 
-        const result = spawn.sync(
-            ensureAllowed(cmd.shift()),
-            [cmd],
-            { stdio: 'inherit' }
-        );
-    });
+    // spawns the command if it is whitelisted and passes its arguments
+    spawn.sync(
+        ensureAllowed(cmd.shift()),
+        [cmd],
+        { stdio: 'inherit' }
+    );
 }
 
-/**
- * Checks to see if a command is allowed.
- *
- * @param {string} cmd - the command to check
- * @return {boolean}
- */
-function ensureAllowed(cmd) {
-    if (allowedCommands.indexOf(cmd) > -1) {
-        return cmd;
-    }
-
-    console.error(chalk.bgRed(`The command ${chalk.italic(cmd)} is not currently whitelisted, please open a PR if you'd like it to be allowed`));
-    process.exit(1);
-}
-
-switch (platform) {
-    case "git":
-        seedFromGit(seed);
-        break;
-
-    case "npm":
-        seedFromNpmPackage(seed);
-        break;
-
-    case "cmd":
-        seedFromCommand(seed);
-        break;
-
-    default:
-        console.error(chalk.bgRed("Platform invalid or unrecognised, please check the docs for allowed seed platforms."));
-        process.exit(1);
-        break;
-}
-
-postSeed();
+sprout();
 
 console.log(chalk.bgGreen(chalk.black('Seeded!')));
