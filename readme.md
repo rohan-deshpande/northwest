@@ -30,7 +30,7 @@ npm run start --prefix src | npm run dev -- m=http://localhost:3000
 
 ## But... Electron?
 
-Electron is no doubt an excellent alternative to NW.js with a huge community behind it and a lot of support. However, it lacks some features which NW.js provides, namely better [source code protection](http://docs.nwjs.io/en/latest/For%20Users/Advanced/Protect%20JavaScript%20Source%20Code/) options. The Electron team has continually stated that this goes against the goals of Electron and they will not be offering it in the near future. So basically, if you want source code protection for your desktop JavaScript app, NW.js is currently the only tool to provide it out of the box. 
+Electron is no doubt an excellent alternative to NW.js with a huge community behind it and a lot of support. However, it lacks some features which NW.js provides, namely better [source code protection](http://docs.nwjs.io/en/latest/For%20Users/Advanced/Protect%20JavaScript%20Source%20Code/) options. The Electron team has consistently stated that they will [not be offering it in the near future](https://github.com/electron/electron/issues/3041). So basically, if you want source code protection for your desktop JavaScript app, NW.js is currently the only tool to provide it out of the box. 
 
 ## Understanding NW.js
 
@@ -83,7 +83,7 @@ Stores shippable releases of your application for whatever operating system you 
 
 ### `src`
 
-Your JavaScript app. Populated via the [`northwest seed`](#seed) command.
+Your JavaScript app. Populated via the [`northwest seed`](#seed) command. Will always contain the [`Nw`](#nw-module) module.
 
 ## API
 
@@ -107,7 +107,7 @@ usage:
 
 ```
 cd my-app
-northwest seed git https://github.com/lukewilde/phaser-js-boilerplate
+northwest seed git https://github.com/lean/phaser-es6-webpack.git
 ```
 
 Seeding creates the JavaScript source for your app. You get three different ways in which to seed your app, all of which will populate your `src` directory with the desired source files. You will also have a module, `Nw` placed in the `src` directory which can be imported by your seed to gain access to node & NW.js objects and methods. Check the 
@@ -132,6 +132,10 @@ The repository (url), package (npm package name) or command you wish to seed fro
 
 If you would like more commands to be supported, please open a PR. 
 
+#### Nw Module
+
+After seeding you'll get a `nw` module placed in your `src` which is exports the `Nw` class. This class contains `getters` for easily accessing the NW.js `nw` object and other associated objects such as `gui`, `Window` as well as standard node modules like `fs` and `path`. If you feel anything is missing from this class, please feel free to open a PR.  
+
 ### Scripts
 
 These commands are available from inside any `northwest` app and are included in your `package.json` after you run `northwest make <app-name>`.
@@ -148,16 +152,18 @@ Each argument needs to be appended after `npm run dev --`, delimited by spaces a
 npm run dev -- main=index.html static=../src/media
 ```
 
-Arguments which affect the manifest will be saved and do not need to be passed again when running `dev`.
+Arguments which affect the manifest will be saved and do not need to be passed again when running `dev`. 
+
+Please note that if your seed uses `webpack` and gets served from a dev server, passing `css`, `js`, or `static` arguments is totally unnecessary as these files will be stored in the dev server. In this instance, you can simply pass the server URL to `main` and everything should just work.
 
 * `main`, `m`
-    * Sets the `main` property of the app's manifest. Must be a path to an `index.html` file or URL to a location serving one. If you set this to a URL, the `node-remote` of your manifest file will also be set to `URL/*`. Defaults to `index.html`
+    * Sets the `main` property of the app's manifest. Must be a path to an `index.html` file or URL to a location serving one. If you set this to a URL, the `node-remote` of your manifest file will also be set to `URL/*`. Handy for dev with seeds using `webpack`. Defaults to `index.html`
 * `css`, `c`
     * Copies the `.css` file located at the supplied path to `app/assets/css/app.css`. This file is watched by `app/index.html` for changes which will trigger an app reload.
 * `js`, `j`
     * Copies the `.js` file located at the supplied path to `app/assets/js/app.js`. This file is watched by `app/index.html` for changes which will trigger an app reload.
 * `static`, `st`
-    * The path to your seed's static files (images, fonts, sounds etc.,). This entire directory will be copied to `app/assets/{static}` where `{static}` is the name of the directory where your static files are stored.
+    * The path to your seed's static files (images, fonts, sounds etc.,). This entire directory will be copied to `app/assets/{static}` where `{static}` is the name of the directory where your static files are stored. **NOTE** If you wish to copy an **entire** directory over, you must end your path with a trailing slash ie., `src/copy/this/dir/`
 * `version`, `v`
     * The version of your app, will set the `version` property of the app's manifest. Defaults to `0.0.1`.
 
@@ -188,6 +194,8 @@ npm run release -- nwbuild=-p win32,win64,osx32,osx64,linux32,linux64 --executab
 
 #### Advanced Usage
 
+##### Custom Scripts
+
 If your `seed` has scripts of its own, such as `npm run start` and you get sick of running both one after the other, feel free to modify your northwest app's scripts to accomodate. For example, if you wanted to start an app created with `create-react-app` and dev a `northwest` app at the same time, you could modify the `northwest` dev script to
 
 ```
@@ -201,8 +209,33 @@ In the above example, the `main` property of the NW.js manifest will be saved af
 "dev": "npm run start --prefix src | northwest dev"
 ```
 
-The same approach can be taken for releasing. If you have some presets which you always want to release with, simply update the `release` script to suit your means eg,.
+You can then pass arguments to `dev` normally. 
 
-##### Woking with `webpack-dev-server`
+The same approach can be taken for releasing. If you have some presets which you always want to release with, simply update the `release` script to suit your means eg.,
 
-Many boilerplates that include `webpack-dev-server`
+```
+"release": "nortwest release -- nwbuild=-p osx64,win64,linux64"
+```
+
+Now `npm run release` will always release for only 64bit operating systems.
+
+##### Woking with `webpack`
+
+Many seeds that use `webpack` will auto launch your app in the browser when you `npm run start`. As NW.js is now your app shell, this can be annoying, you may also be using Node APIs that are not available in the browser (`fs` etc.,) so there's not really much point developing in the browser at this point. Therefore if your seed has a way to disable this, it's probably a good idea to do so. Here's a quick reference for disabling it in some seeds that might use this functionality;
+
+###### `create-react-app`
+
+Set the `BROWSER=none` environment variable in your `.env` file 
+
+###### `vue init`
+
+Set `autoOpenBrowser: false` in `config/index.js`
+
+###### `lean/phaser-es6-webpack`
+
+Add `open: false` to `new BrowserSyncPlugin` constructor options in `webpack.config.js`
+
+**NOTE**
+
+There will probably be a slight delay between the dev server starting and your NW.js app connecting to it, you might see a 404 not found page at first but this should fix itself in a few seconds. 
+

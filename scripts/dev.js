@@ -33,7 +33,7 @@ const env = 'development';
  */
 function die(err) {
     console.error(chalk.bgRed(err));
-    process.exit(1);
+    process.exit(0);
 }
 
 /**
@@ -120,13 +120,15 @@ function nw() {
 function dev() {
     const settings = parseArgs();
 
+    console.log(settings);
+
     readManifest((manifest) => {
         manifest['main'] = settings.main || manifest.main;
         manifest['node-remote'] = (manifest.main.includes('http')) ? `${manifest.main}/*` : '<all_urls>';
         manifest['version'] = settings.version || manifest.version;
 
         if (settings.static) {
-            fs.copySync(settings.static, 'app/assets', (err) => {
+            fs.copy(settings.static, `app/assets/${path.basename(settings.static)}`, (err) => {
                 if (err) die(err)
             });
         }

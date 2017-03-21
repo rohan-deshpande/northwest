@@ -1,8 +1,9 @@
 /**
- * Wrapper class for node & nwjs functionality.
+ * Wrapper class for Node & NW.js functionality.
  *
+ * @author rohandeshpande
  */
-export default class Nw {
+class Nw {
 
     /**
      * Gets the global nw object if it exists.
@@ -73,6 +74,10 @@ export default class Nw {
      * @return void
      */
     catch() {
-        process.on('uncaughtException', err => if (err) console.log(err));
+        process.on('uncaughtException', (err) => {
+            if (err) console.log(err)
+        });
     }
 }
+
+module.exports = new Nw();
