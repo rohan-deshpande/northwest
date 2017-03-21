@@ -8,17 +8,17 @@ const path = require('path');
 const chalk = require('chalk');
 const spawn = require('cross-spawn');
 const allowed = [
-    'main',
-    'm',
-    'css',
-    'c',
-    'js',
-    'j',
-    'static',
-    'st',
-    'version',
-    'v'
-]
+  'main',
+  'm',
+  'css',
+  'c',
+  'js',
+  'j',
+  'static',
+  'st',
+  'version',
+  'v'
+];
 const args = process.argv;
 const argsNum = args.length;
 const css = 'assets/css/app.css';
@@ -32,8 +32,8 @@ const env = 'development';
  * @return void
  */
 function die(err) {
-    console.error(chalk.bgRed(err));
-    process.exit(0);
+  console.error(chalk.bgRed(err));
+  process.exit(0);
 }
 
 /**
@@ -42,46 +42,46 @@ function die(err) {
  * @return {object} settings - an object containing settings for dev
  */
 function parseArgs() {
-    let settings = {};
+  let settings = {};
 
-    if (argsNum === 2) {
-        return settings;
-    }
-
-    for (let i = 2; i < argsNum; i++) {
-        let arg = args[i].split('=');
-        let argKey = arg[0];
-        let argValue = arg[1];
-
-        if (allowed.indexOf(argKey) < 0) {
-            die(chalk.bgRed(`The argument ${chalk.italic(argKey)} is invalid`));
-        }
-
-        switch (argKey) {
-            case 'main':
-            case 'm':
-                settings.main = argValue;
-                break;
-            case 'css':
-            case 'c':
-                settings.css = argValue;
-                break;
-            case 'js':
-            case 'j':
-                settings.js = argValue;
-                break;
-            case 'static':
-            case 'st':
-                settings.static = argValue;
-                break;
-            case 'version':
-            case 'v':
-                settings.version = argValue;
-                break;
-        }
-    }
-
+  if (argsNum === 2) {
     return settings;
+  }
+
+  for (let i = 2; i < argsNum; i++) {
+    let arg = args[i].split('=');
+    let argKey = arg[0];
+    let argValue = arg[1];
+
+    if (allowed.indexOf(argKey) < 0) {
+      die(chalk.bgRed(`The argument ${chalk.italic(argKey)} is invalid`));
+    }
+
+    switch (argKey) {
+      case 'main':
+      case 'm':
+        settings.main = argValue;
+        break;
+      case 'css':
+      case 'c':
+        settings.css = argValue;
+        break;
+      case 'js':
+      case 'j':
+        settings.js = argValue;
+        break;
+      case 'static':
+      case 'st':
+        settings.static = argValue;
+        break;
+      case 'version':
+      case 'v':
+        settings.version = argValue;
+        break;
+    }
+  }
+
+  return settings;
 };
 
 /**
@@ -90,13 +90,13 @@ function parseArgs() {
  * @param {function} callback - callback to execute after the json is read
  */
 function readManifest(callback) {
-    fs.readJson('app/package.json', 'utf8', (err, contents) => {
-        if (err) {
-            die(chalk.bgRed('Unable to read nwjs manifest'))
-        }
+  fs.readJson('app/package.json', 'utf8', (err, contents) => {
+    if (err) {
+      die(chalk.bgRed('Unable to read nwjs manifest'))
+    }
 
-        callback(contents);
-    });
+    callback(contents);
+  });
 };
 
 /**
@@ -105,11 +105,11 @@ function readManifest(callback) {
  * @return void
  */
 function nw() {
-    spawn.sync(
-        'nw',
-        ['app'],
-        { stdio: 'inherit' }
-    );
+  spawn.sync(
+    'nw',
+    ['app'],
+    { stdio: 'inherit' }
+  );
 }
 
 /**
@@ -118,47 +118,51 @@ function nw() {
  * @return void
  */
 function dev() {
-    const settings = parseArgs();
+  const settings = parseArgs();
 
-    console.log(settings);
+  readManifest((manifest) => {
+    manifest['main'] = settings.main || manifest.main;
+    manifest['node-remote'] = (manifest.main.includes('http')) ? `${manifest.main}/*` : '<all_urls>';
+    manifest['version'] = settings.version || manifest.version;
 
-    readManifest((manifest) => {
-        manifest['main'] = settings.main || manifest.main;
-        manifest['node-remote'] = (manifest.main.includes('http')) ? `${manifest.main}/*` : '<all_urls>';
-        manifest['version'] = settings.version || manifest.version;
+    // if we have a static directory, copy it over
+    if (settings.static) {
+      fs.copy(settings.static, `app/assets/${path.basename(settings.static)}`, (err) => {
+        if (err) die(err)
+      });
+    }
 
-        if (settings.static) {
-            fs.copy(settings.static, `app/assets/${path.basename(settings.static)}`, (err) => {
-                if (err) die(err)
-            });
-        }
+    // if we have css, copy it over
+    if (settings.css) {
+      fs.copySync(settings.css, `app/${css}`, (err) => {
+        if (err) die(err);
+      });
+    }
 
-        if (settings.css) {
-            fs.copySync(settings.css, `app/${css}`, (err) => {
-                if (err) die(err);
-            });
-        }
+    // got js? copy it
+    if (settings.js) {
+      fs.copySync(settings.js, `app/${js}`, (err) => {
+        if (err) die(err);
+      });
+    }
 
-        if (settings.js) {
-            fs.copySync(settings.js, `app/${js}`, (err) => {
-                if (err) die(err);
-            });
-        }
+    // write the mutated manifest
+    fs.writeJson('app/package.json', manifest, (err) => {
+      if (err) die(err);
 
-        fs.writeJson('app/package.json', manifest, (err) => {
-            if (err) die(err);
+      // render the html via ejs with vars passed
+      ejs.renderFile('app/index.ejs', { css: css, js: js, env: env }, (err, html) => {
+        if (err) die(err);
 
-            ejs.renderFile('app/index.ejs', { css: css, js: js, env: env }, (err, html) => {
-                if (err) die(err);
+        fs.outputFile('app/index.html', html, (err) => {
+          if (err) die(err);
 
-                fs.outputFile('app/index.html', html, (err) => {
-                    if (err) die(err);
-
-                    nw();
-                });
-            });
+          // spawn nw and run it
+          nw();
         });
+      });
     });
+  });
 };
 
 dev();
