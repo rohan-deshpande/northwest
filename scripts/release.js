@@ -24,7 +24,10 @@ function getSettings(releaseDir) {
     settings = {
         app: './app',
         main: 'index.html',
-        nwbuild: []
+        nwbuild: [
+            '-o',
+            releaseDir
+        ]
     };
 
     if (argsNum === 2) {
@@ -48,10 +51,6 @@ function getSettings(releaseDir) {
                 break;
         }
     }
-
-    // ensure that output directory is always the release directory
-    settings.nwbuild.push('-o');
-    settings.nwbuild.push(releaseDir);
 
     return settings;
 }
@@ -98,7 +97,7 @@ function release(manifest) {
     // ensure the versioned release directory exists
     fs.ensureDirSync(releaseDir);
 
-    console.log(chalk.bgGreen(chalk.black(`Packaging ${chalk.bold(name)} v${version} for release…`)));
+    console.log(chalk.bgGreen(chalk.black(`Building ${chalk.bold(name)} v${version} for release…`)));
 
     // spawn the nwb process
     spawn.sync(

@@ -87,16 +87,14 @@ function seedFromNpmPackage(seed) {
         spawn.sync(
             'npm',
             ['init', '-y'],
-            { cwd: src },
-            { stdio: 'inherit' }
+            {  cwd: src, stdio: 'inherit' }
         );
 
         // auto install seed as dependency
         spawn.sync(
             'npm',
             ['install', seed, '-S'],
-            { cwd: src },
-            { stdio: 'inherit' }
+            { cwd: src, stdio: 'inherit' }
         );
     });
 }

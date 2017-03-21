@@ -188,7 +188,7 @@ npm run release -- nwbuild=-p win32,win64,osx32,osx64,linux32,linux64 --executab
 
 #### Advanced Usage
 
-If your `seed` has scripts of its own, such as `npm run dev` and you get sick of running both one after the other, feel free to modify your app's scripts to accomodate. For example, if you wanted to start an app created with `create-react-app` and dev a `northwest` app at the same time, you could modify the `northwest` dev script to
+If your `seed` has scripts of its own, such as `npm run start` and you get sick of running both one after the other, feel free to modify your northwest app's scripts to accomodate. For example, if you wanted to start an app created with `create-react-app` and dev a `northwest` app at the same time, you could modify the `northwest` dev script to
 
 ```
 "dev": "npm run start --prefix src | northwest dev -- m=http://localhost:3000"
@@ -202,3 +202,7 @@ In the above example, the `main` property of the NW.js manifest will be saved af
 ```
 
 The same approach can be taken for releasing. If you have some presets which you always want to release with, simply update the `release` script to suit your means eg,.
+
+##### Woking with `webpack-dev-server`
+
+Many boilerplates that include `webpack-dev-server`
