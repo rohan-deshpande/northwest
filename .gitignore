@@ -43,3 +43,8 @@ source/lib/
 source/bower_components/
 gs.assets/
 nwjs.crashdump/
+deprecated/
+
+# examples
+
+examples/

@@ -2,11 +2,11 @@
 
 'use strict';
 
-const shell = require('shelljs');
+const fs = require('fs-extra');
 const chalk = require('chalk');
 
 console.log(chalk.magenta('Unseeding...'));
 
-shell.exec('rm -rf src/*');
+fs.emptyDirSync('src');
 
 console.log(chalk.magenta('Unseeded'));

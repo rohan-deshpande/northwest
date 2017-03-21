@@ -2,12 +2,11 @@
 
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const shell = require('shelljs');
 const chalk = require('chalk');
 const spawn = require('cross-spawn');
-const assign = require('lodash.assign');
 const src = "src";
 const platform = process.argv[2];
 const seed = process.argv[3];
@@ -21,40 +20,70 @@ if (!seed) {
     throw new Error(chalk.bgRed("You must provide a seed"));
 }
 
-if (!fs.existsSync(src)) {
-    fs.mkdirSync(src);
-}
-
 console.log(chalk.bgGreen(chalk.black('Seeding…')));
 
 /**
- * Pre seeding setup. Removes the nw module from the src directory so it can be written to.
+ * Sprouts the seed. Ensures src directory is writable, runs the appropriate seed command
+ * based on the platform provided, adds the Nw module back to the src after seeding.
  *
- * @param {function} callback
  * @return void
  */
-const preSeed = (callback) => {
-    shell.exec(`
-        cd src &&
-        rm -rf nw;
-    `);
+function sprout() {
+    // ensure src directory is empty before writing to it
+    fs.emptyDirSync('./src');
 
-    callback();
+    // based on the platform, fill the src directory via the right method
+    switch (platform) {
+        case "git":
+            seedFromGit(seed);
+            break;
+
+        case "npm":
+            seedFromNpmPackage(seed);
+            break;
+
+        case "cmd":
+            seedFromCommand(seed);
+            break;
+
+        default:
+            console.error(
+                chalk.bgRed(
+                    "Platform invalid or unrecognised, please check the docs for allowed seed platforms."
+                )
+            );
+            process.exit(1);
+            break;
+    }
+
+    // put the nw module back in the src directory
+    fs.readFile(path.resolve(__dirname, '..', './template/src/nw/index.js'), 'utf8', (err, contents) => {
+        if (err) {
+            console.error(chalk.bgRed(err));
+            process.exit(1);
+        }
+
+        fs.outputFileSync('src/nw/index.js', contents);
+    });
 }
 
 /**
- * Post seed winding up. Ensures the nw module is placed in the src directory of the seed.
+ * Checks to see if a command is allowed.
  *
- * @return void
+ * @param {string} cmd - the command to check
+ * @return {string} cmd - the command if it was allowed
  */
-const postSeed = () => {
-    fs.readFile(path.resolve(__dirname, '..', './template/src/nw/index.js'), 'utf8', (err, contents) => {
-        shell.exec(`
-            cd src &&
-            mkdir nw
-            echo '${contents}' > nw/index.js;
-        `);
-    });
+function ensureAllowed(cmd) {
+    if (allowedCommands.indexOf(cmd) > -1) {
+        return cmd;
+    }
+
+    console.error(
+        chalk.bgRed(
+            `The command ${chalk.italic(cmd)} is not currently whitelisted, please open a PR if you'd like it to be allowed`
+        )
+    );
+    process.exit(1);
 }
 
 /**
@@ -63,13 +92,22 @@ const postSeed = () => {
  * @param {string} seed - the repo to fetch
  * @return void
  */
-const seedFromGit = (seed) => {
-    preSeed(() => shell.exec(`
-        git clone ${seed} src/. &&
-        cd src &&
-        find . | grep .git | xargs rm -rf &&
-        cd ../;
-    `));
+function seedFromGit(seed) {
+
+    // clone git repo
+    spawn.sync(
+        'git',
+        ['clone', seed, 'src/.'],
+        { stdio: 'inherit' }
+    );
+
+    // cleanup git files
+    shell.exec('find . | grep .git | xargs rm -rf;', {cwd: './src'}, (err, stdout, stderr) => {
+        if (err) {
+            console.error(chalk.bgRed(`exec error: ${error}`));
+            process.exit(1);
+        }
+    });
 }
 
 /**
@@ -78,13 +116,21 @@ const seedFromGit = (seed) => {
  * @param {string} seed - the npm package to seed from
  * @return void
  */
-const seedFromNpmPackage = (seed) => {
-    preSeed(() => shell.exec(`
-        cd src &&
-        npm init -y &&
-        npm i -S ${seed} &&
-        cd ../;
-    `));
+function seedFromNpmPackage(seed) {
+
+    // initialise npm
+    spawn.sync(
+        'npm',
+        ['init', '-y'],
+        {  cwd: src, stdio: 'inherit' }
+    );
+
+    // auto install seed as dependency
+    spawn.sync(
+        'npm',
+        ['install', seed, '-S'],
+        { cwd: src, stdio: 'inherit' }
+    );
 }
 
 /**
@@ -93,60 +139,20 @@ const seedFromNpmPackage = (seed) => {
  * @param {string} seed - the npm command to seed from
  * @return void
  */
-const seedFromCommand = (seed) => {
-    preSeed(() => {
-        const cmd = seed.split(" ");
-        const result = spawn.sync(
-            ensureAllowed(cmd.shift()),
-            cmd,
-            { stdio: 'inherit' }
-        );
-    });
+function seedFromCommand(seed) {
+    let cmd = seed.split(" ");
+
+    // ensure that the final argument is to seed into the src directory.
+    cmd.push('./src');
+
+    // spawns the command if it is whitelisted and passes its arguments
+    spawn.sync(
+        ensureAllowed(cmd.shift()),
+        [cmd],
+        { stdio: 'inherit' }
+    );
 }
 
-/**
- * Checks to see if a command is allowed.
- *
- * @param {string} cmd - the command to check
- * @return {boolean}
- */
-const ensureAllowed = (cmd) => {
-    if (allowedCommands.indexOf(cmd) > -1) {
-        return cmd;
-    }
-
-    console.error(chalk.bgRed(`The command ${chalk.italic(cmd)} is not currently whitelisted, please open a PR if you'd like it to be allowed`));
-    process.exit(1);
-}
-
-/**
- * Checks to see if operating system is windows.
- *
- * @return bool
- */
-const isWin = () => {
-    return require('os').platform().indexOf('win') > -1;
-}
-
-switch (platform) {
-    case "git":
-        seedFromGit(seed);
-        break;
-
-    case "npm":
-        seedFromNpmPackage(seed);
-        break;
-
-    case "cmd":
-        seedFromCommand(seed);
-        break;
-
-    default:
-        console.error(chalk.bgRed("Platform invalid or unrecognised, please check the docs for allowed seed platforms."));
-        process.exit(1);
-        break;
-}
-
-postSeed();
+sprout();
 
 console.log(chalk.bgGreen(chalk.black('Seeded!')));

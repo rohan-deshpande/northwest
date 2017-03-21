@@ -1,0 +1,12 @@
+{
+  "main": "index.html",
+  "name": "northwest-app",
+  "version": "0.0.1",
+  "window": {
+    "title": "northwest-app",
+    "frame": true,
+    "width": 1024,
+    "height": 768,
+    "position": "center"
+  }
+}
