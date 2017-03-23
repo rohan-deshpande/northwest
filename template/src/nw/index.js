@@ -80,4 +80,4 @@ class Nw {
   }
 }
 
-module.exports = new Nw();
+export const nw = new Nw();
