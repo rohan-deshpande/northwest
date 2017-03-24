@@ -134,7 +134,9 @@ If you would like more commands to be supported, please open a PR.
 
 #### Nw Module
 
-After seeding you'll get a `nw` module placed in your `src` which is exports the `Nw` class. This class contains `getters` for easily accessing the NW.js `nw` object and other associated objects such as `gui`, `Window` as well as standard node modules like `fs` and `path`. If you feel anything is missing from this class, please feel free to open a PR.  
+After seeding you'll get a `nw` ES6 module placed in your `src` which exports an instance of the `Nw` class. This class contains `getters` for easily accessing the NW.js `nw` object and other associated objects such as `gui`, `Window` as well as standard node modules like `fs` and `path`. It's basically designed to be a helper class that wraps NW.js and node functionality. 
+
+Some seeds might require you to place this module in a certain directory in order for it to be transpiled correctly, for example, `create-react-app` requires you to place it in its `src` directory (so that will be `src/src` after you seed). Feel free to customise the class as you see fit. 
 
 ### Scripts
 
@@ -163,13 +165,15 @@ Please note that if your seed uses `webpack` and gets served from a dev server, 
 * `js`, `j`
     * Copies the `.js` file located at the supplied path to `app/assets/js/app.js`. This file is watched by `app/index.html` for changes which will trigger an app reload.
 * `static`, `st`
-    * The path to your seed's static files (images, fonts, sounds etc.,). This entire directory will be copied to `app/assets/{static}` where `{static}` is the name of the directory where your static files are stored. **NOTE** If you wish to copy an **entire** directory over, you must end your path with a trailing slash ie., `src/copy/this/dir/`
+    * The path to your seed's static files (images, fonts, sounds etc.,). This entire directory will be copied to `app/assets/{static}` where `{static}` is the name of the directory where your static files are stored. **Note!** If you wish to copy an **entire** directory over, you must end your path with a trailing slash ie., `src/copy/this/dir/`
 * `version`, `v`
     * The version of your app, will set the `version` property of the app's manifest. Defaults to `0.0.1`.
 
 #### `npm run release -- <app> <manifest> <nwbuild>`
 
-This will create releases for the OS of your choice using the [`nwjs-builder`](https://github.com/evshiron/nwjs-builder) package. 
+This will create releases for the OS of your choice using the [`nwjs-builder`](https://github.com/evshiron/nwjs-builder) package.
+
+Releasing will package your app using the `package.json` file from `./app` as its manifest. This process will also **always** set the manifest's `main` property to `index.html`.
 
 ##### Arguments
 
@@ -186,15 +190,14 @@ npm run release -- nwbuild=-p win32,win64,osx32,osx64,linux32,linux64 --executab
 ```
 
 * `app`, `a`
-	* The path to the app to release, defaults to `./app` but can be any directory containing an `index.html` file, for example `src/build`
-* `manifest`, `m`
-	* The path to the `package.json` to use as the NW.js manifest file. Defaults to `./app/package.json`. **NOTE!** the `main` property of the manifest will **always** be set to `index.html` when releasing. 
+	* The path to the app to release, defaults to `./app` but can be any directory containing an `index.html` file, for example `src/build` 
 * `nwbuild`, `n`
 	* Prefix to delimit any custom [`nwjs-builder`](https://github.com/evshiron/nwjs-builder#usage) arguments you wish to pass 
+	* **Note!** The output directory, `-o`, is autoset by this command, so there's no need to pass it here
 
 #### Advanced Usage
 
-##### Custom Scripts
+##### Customising Your Scripts
 
 If your `seed` has scripts of its own, such as `npm run start` and you get sick of running both one after the other, feel free to modify your northwest app's scripts to accomodate. For example, if you wanted to start an app created with `create-react-app` and dev a `northwest` app at the same time, you could modify the `northwest` dev script to
 
@@ -221,7 +224,7 @@ Now `npm run release` will always release for only 64bit operating systems.
 
 ##### Woking with `webpack`
 
-Many seeds that use `webpack` will auto launch your app in the browser when you `npm run start`. As NW.js is now your app shell, this can be annoying, you may also be using Node APIs that are not available in the browser (`fs` etc.,) so there's not really much point developing in the browser at this point. Therefore if your seed has a way to disable this, it's probably a good idea to do so. Here's a quick reference for disabling it in some seeds that might use this functionality;
+Many seeds that use `webpack` will auto launch your app in the browser when you `npm run start`. As NW.js is now your app shell, this can get annoying. Since you may also be using Node APIs that are not available in the browser (`fs` etc.,) there's not really much point developing in the browser at this point. Therefore if your seed has a way to disable this, it's probably a good idea to do so. Here's a quick reference for disabling it in some seeds that might use this functionality;
 
 ###### `create-react-app`
 
@@ -235,7 +238,5 @@ Set `autoOpenBrowser: false` in `config/index.js`
 
 Add `open: false` to `new BrowserSyncPlugin` constructor options in `webpack.config.js`
 
-**NOTE**
-
-There will probably be a slight delay between the dev server starting and your NW.js app connecting to it, you might see a 404 not found page at first but this should fix itself in a few seconds. 
+**Note!** There will probably be a slight delay between the dev server starting and your NW.js app connecting to it, you might see a 404 not found page at first but this should fix itself in a few seconds. 
 

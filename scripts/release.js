@@ -41,12 +41,11 @@ function getSettings(releaseDir) {
 
     switch (argKey) {
       case "app":
+      case "a":
         settings.app = argValue;
         break;
-      case "main":
-        settings.main = argValue;
-        break;
       case "nwbuild":
+      case "n":
         settings.nwbuild = argValue.split(' ');
         break;
     }
