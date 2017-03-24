@@ -111,4 +111,5 @@ function release(manifest) {
   console.log(chalk.bgGreen(chalk.black(`${chalk.bold(name)} v${version} has been built!`)));
 }
 
+process.env.NODE_ENV = 'production';
 readManifest(manifest => release(manifest));

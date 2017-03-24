@@ -146,6 +146,10 @@ These commands are available from inside any `northwest` app and are included in
 
 Runs the NW.js app with the installed version of NW.js. You can pass a number of arguments to this script to configure the NW.js manifest before starting the app.
 
+**Note!**
+
+This script will always set your `process.env.NODE_ENV` to `'development'`.
+
 ##### Arguments
 
 Each argument needs to be appended after `npm run dev --`, delimited by spaces and set with `=` eg.,
@@ -174,6 +178,10 @@ Please note that if your seed uses `webpack` and gets served from a dev server, 
 This will create releases for the OS of your choice using the [`nwjs-builder`](https://github.com/evshiron/nwjs-builder) package.
 
 Releasing will package your app using the `package.json` file from `./app` as its manifest. This process will also **always** set the manifest's `main` property to `index.html`.
+
+**Note!**
+
+This script will always set your `process.env.NODE_ENV` to `'production'`.
 
 ##### Arguments
 

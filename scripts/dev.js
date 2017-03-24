@@ -2,7 +2,6 @@
 
 'use strict';
 
-const ejs = require('ejs');
 const fs = require('fs-extra');
 const path = require('path');
 const chalk = require('chalk');
@@ -21,9 +20,6 @@ const allowed = [
 ];
 const args = process.argv;
 const argsNum = args.length;
-const css = 'assets/css/app.css';
-const js = 'assets/js/app.js';
-const env = 'development';
 
 /**
  * Outputs the error to the console and exits the process.
@@ -105,6 +101,8 @@ function readManifest(callback) {
  * @return void
  */
 function nw() {
+  process.env.NODE_ENV = 'development';
+  
   spawn.sync(
     'nw',
     ['app'],
@@ -150,17 +148,8 @@ function dev() {
     fs.writeJson('app/package.json', manifest, (err) => {
       if (err) die(err);
 
-      // render the html via ejs with vars passed
-      ejs.renderFile('app/index.ejs', { css: css, js: js, env: env }, (err, html) => {
-        if (err) die(err);
-
-        fs.outputFile('app/index.html', html, (err) => {
-          if (err) die(err);
-
-          // spawn nw and run it
-          nw();
-        });
-      });
+      // spawn nw and run it
+      nw();
     });
   });
 };

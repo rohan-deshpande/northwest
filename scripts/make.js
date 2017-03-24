@@ -10,7 +10,7 @@ const dir = process.argv[2];
 const app = dir + "/app";
 const appName = path.basename(dir);
 
-console.log(chalk.inverse(`Making ${chalk.bold(appName)}, please wait, this might take a while…`));
+console.log(chalk.inverse(`Making ${chalk.bold(appName)}, please wait, this might take a few mins…`));
 
 // ensure that the directory is made.
 fs.mkdirs(dir, (err) => {
