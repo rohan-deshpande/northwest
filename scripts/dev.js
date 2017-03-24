@@ -102,7 +102,7 @@ function readManifest(callback) {
  */
 function nw() {
   process.env.NODE_ENV = 'development';
-  
+
   spawn.sync(
     'nw',
     ['app'],
@@ -120,8 +120,13 @@ function dev() {
 
   readManifest((manifest) => {
     manifest['main'] = settings.main || manifest.main;
-    manifest['node-remote'] = (manifest.main.includes('http')) ? `${manifest.main}/*` : '<all_urls>';
+    manifest['node-remote'] = (manifest.main.includes('http')) ? `${manifest.main}/*` : false;
     manifest['version'] = settings.version || manifest.version;
+
+    // delete node-remote property if we don't need it
+    if (!manifest['node-remote']) {
+      delete manifest['node-remote'];
+    }
 
     // if we have a static directory, copy it over
     if (settings.static) {
