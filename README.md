@@ -223,7 +223,6 @@ If your `seed` has scripts of its own, such as `npm run start` and you get sick 
 
 ```json
 "dev": "npm run start --prefix src | northwest dev -- m=http://localhost:3000"
-
 ```
 
 In the above example, the `main` property of the NW.js manifest will be saved after the first time you've run this command, so the above could be shortened to
@@ -259,6 +258,12 @@ If you are using the `webpack` template, set `autoOpenBrowser: false` in `config
 Add `open: false` to `new BrowserSyncPlugin` constructor options in `webpack.config.js`
 
 **Note!** There will probably be a slight delay between the dev server starting and your NW.js app connecting to it, you might see a 404 not found page at first but this should fix itself in a few seconds.
+
+## Roadmap
+
+* examples
+* support for `nwjc` as a script to easily secure your source code
+* and more!
 
 ## License
 
