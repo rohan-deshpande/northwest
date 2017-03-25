@@ -10,7 +10,7 @@
 * [Requirements](#requirements)
 * [Quickstart](#quickstart)
 * [What is this?](#what-is-this)
-	* [Why not Electron](#why-not-electron)
+	* [Why not Electron?](#why-not-electron)
 	* [Understanding NW.js](#understanding-nwjs)
 	* [Mildly Opinionated](#mildly-opinionated)
 * [API](#api)
@@ -40,7 +40,7 @@ npm install -g northwest
 
 ## Quickstart
 
-This example uses [`create-react-app`](https://github.com/facebookincubator/create-react-app) via the `northwest seed cmd` command. You can also [`seed`](#seed) from a git repository or an npm package.
+This example makes an app with [`make`](#northwest-make-app-name) then seeds it with [`create-react-app`](https://github.com/facebookincubator/create-react-app) via the [`seed`](#northwest-seed-platform-seed) command.
 
 ```bash
 npm install -g northwest
@@ -54,11 +54,11 @@ npm run start --prefix src | npm run dev -- m=http://localhost:3000
 
 [NW.js](http://nwjs.io) is a great tool for releasing JavaScript apps for desktop, but it doesn't really care _how_ to build your app (nor should it!).
 
-**Northwest** is a CLI that provides a way to `make` your NW.js app, and `seed` it from a source of your choice. You can currently seed from a git repository, an npm package or a whitelisted command. It also gives you some tools to `dev` with your chosen seed inside the NW.js app runtime giving you access to node modules and things like the user's file system. You also get built-in scripts to `release` your app for Mac, Linux & Windows in various flavours.
+**Northwest** is a CLI that provides a way to [`make`](#northwest-make-app-name) your NW.js app, and [`seed`](#northwest-seed-platform-seed) it from a source of your choice. You can currently seed from a git repository, an npm package or a whitelisted command. It also gives you some tools to [`dev`](#npm-run-dev----arguments) with your chosen seed inside the NW.js app runtime giving you access to node modules and things like the user's file system. You also get built-in scripts to [`release`](#npm-run-release----app-manifest-nwbuild) your app for Mac, Linux & Windows in various flavours.
 
 ### Why not Electron?
 
-Electron is no doubt an excellent alternative to NW.js with a huge community behind it and a lot of support. However, it lacks some features which NW.js provides, namely better [source code protection](http://docs.nwjs.io/en/latest/For%20Users/Advanced/Protect%20JavaScript%20Source%20Code/) options. The Electron team has consistently stated that they will [not be offering it in the near future](https://github.com/electron/electron/issues/3041). So basically, if you want source code protection for your desktop JavaScript app, NW.js is currently the only tool to provide it out of the box.
+Electron is no doubt an excellent alternative to NW.js with a huge community behind it a lot of support, and, let's be honest, a hotter website. However, it lacks some features which NW.js provides, namely better [source code protection](http://docs.nwjs.io/en/latest/For%20Users/Advanced/Protect%20JavaScript%20Source%20Code/) options. The Electron team has consistently stated that they will [not be offering it in the near future](https://github.com/electron/electron/issues/3041). So basically, if you want source code protection for your desktop JavaScript app, NW.js is currently the only tool to provide it out of the box.
 
 
 ### Understanding NW.js
@@ -94,7 +94,11 @@ These commands become globally available once you `npm install -g northwest`.
 northwest make my-app
 ```
 
-This command makes your NW.js app with the following structure:
+##### Arguments
+
+###### `<app-name>`
+
+The name of your app. This will be written into the NW.js manifest and will also be the name of the directory your app installs into with the following structure:
 
 #### Structure
 
@@ -145,7 +149,7 @@ Seeding creates the JavaScript source for your app. You get three different ways
 
 ##### Arguments
 
-`<platform>`
+###### `<platform>`
 
 This argument defines the platform which you will seed from, there are three choices
 
@@ -153,7 +157,7 @@ This argument defines the platform which you will seed from, there are three cho
 * `npm` - seeds from an npm package
 * `cmd` - seeds from a whitelisted command
 
-`<seed>`
+###### `<seed>`
 
 The repository (url), package (npm package name) or command you wish to seed from.
 
