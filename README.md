@@ -4,6 +4,28 @@
 
 > Journey to the north west child, there, you will find solace.
 
+## TOC
+
+* [Installation](#installation)
+* [Requirements](#requirements)
+* [Quickstart](#quickstart)
+* [What is this?](#what-is-this)
+	* [Why not Electron](#why-not-electron)
+	* [Understanding NW.js](#understanding-nwjs)
+	* [Mildly Opinionated](#mildly-opinionated)
+* [API](#api)
+	* [Commands](#commands)
+		* [`northwest make`](#northwest-make-app-name)
+		* [`northwest seed`](#northwest-seed-platform-seed)
+	* [Scripts](#scripts)
+		* [`npm run dev`](#npm-run-dev----arguments)
+		* [`npm run release`](#npm-run-release----app-manifest-nwbuild)
+		* [Advanced Usage](#advanced-usage)
+		* [Working with Webpack](#working-with-webpack)
+* [Roadmap](#roadmap)
+* [License](#license)
+* [Credits](#credits)
+
 ## Installation
 
 ```bash
@@ -28,17 +50,18 @@ northwest seed cmd "create-react-app src"
 npm run start --prefix src | npm run dev -- m=http://localhost:3000
 ```
 
-## Why?
+## What is this?
 
 [NW.js](http://nwjs.io) is a great tool for releasing JavaScript apps for desktop, but it doesn't really care _how_ to build your app (nor should it!).
 
-**Northwest** provides a way to `make` your NW.js app, and `seed` it from a source of your choice. You can currently seed from a git repository, an npm package or a whitelisted command. It also gives you some tools to `dev` with your chosen seed inside the NW.js app runtime giving you access to node modules and things like the user's file system. You also get built-in scripts to `release` your app for Mac, Linux & Windows in various flavours.
+**Northwest** is a CLI that provides a way to `make` your NW.js app, and `seed` it from a source of your choice. You can currently seed from a git repository, an npm package or a whitelisted command. It also gives you some tools to `dev` with your chosen seed inside the NW.js app runtime giving you access to node modules and things like the user's file system. You also get built-in scripts to `release` your app for Mac, Linux & Windows in various flavours.
 
-## But... Electron?
+### Why not Electron?
 
 Electron is no doubt an excellent alternative to NW.js with a huge community behind it and a lot of support. However, it lacks some features which NW.js provides, namely better [source code protection](http://docs.nwjs.io/en/latest/For%20Users/Advanced/Protect%20JavaScript%20Source%20Code/) options. The Electron team has consistently stated that they will [not be offering it in the near future](https://github.com/electron/electron/issues/3041). So basically, if you want source code protection for your desktop JavaScript app, NW.js is currently the only tool to provide it out of the box.
 
-## Understanding NW.js
+
+### Understanding NW.js
 
 It's recommended that you've got at least a basic understanding of NW.js before using **Northwest**, here's some parts of the documentation that are must-reads:
 
@@ -47,7 +70,7 @@ It's recommended that you've got at least a basic understanding of NW.js before 
 * [JavaScript contexts in NW.js](http://docs.nwjs.io/en/latest/For%20Users/Advanced/JavaScript%20Contexts%20in%20NW.js/)
 * [Protect JavaScript Source Code](http://docs.nwjs.io/en/latest/For%20Users/Advanced/Protect%20JavaScript%20Source%20Code/)
 
-## Mildly Opinionated
+### Mildly Opinionated
 
 **Northwest** is a mildly opinionated tool. It is designed for convenience and to increase productivity, but in order to achieve this, it makes some assumptions about your JavaScript app. Most of these can be overcome but if you're app is not setup in a certain way, it may require more tinkering to get things to work as intended. Here's a short summary of things to note:
 
@@ -55,7 +78,25 @@ It's recommended that you've got at least a basic understanding of NW.js before 
 * Your app should work with bundled assets and not need to pull things in from locations which won't exist on user's systems when you `release` (unless these are loaded at runtime via requests)
 * You should probably be using [Babel](http://babeljs.io) to transpile your source code to take advantage of ES6/7 features, this is not a requirement, but it is recommended
 
-## Structure
+
+
+## API
+
+### Commands
+
+These commands become globally available once you `npm install -g northwest`.
+
+### `northwest make <app-name>`
+
+**Usage:**
+
+```bash
+northwest make my-app
+```
+
+This command makes your NW.js app with the following structure:
+
+#### Structure
 
 ```
 app/
@@ -75,7 +116,7 @@ package.json
 README.md
 ```
 
-### `app`
+##### `app`
 
 Contains your [NW.js manifest](http://docs.NW.js.io/en/latest/References/Manifest%20Format/#quick-start). When you `npm run dev` this is the default directory that is used, however you can configure some manifest properties before running NW.js when using this script, check the [dev](#dev) docs for more on this. When you `npm run release` this is the directory that will be used as your build by default. Again, this is also configurable by passing flags to the `release` command, for more info checkout the [release](#release) docs.
 
@@ -83,29 +124,13 @@ The default `index.html` includes the `assets/css/app.css` and `assets/js/app.js
 
 Remember, NW.js is your "chrome" now, so if you have an `index.html` entry point in your `src` and you aren't serving one from a local webserver, your `src/path/to/index.html` file will need to be migrated to `app/index.html`.
 
-### `releases`
+##### `releases`
 
 Stores shippable releases of your application for whatever operating system you specified with the [`npm run release`](#release) command.
 
-### `src`
+##### `src`
 
 Your JavaScript app. Populated via the [`northwest seed`](#seed) command. Will always contain the [`Nw`](#nw-module) module.
-
-## API
-
-### Commands
-
-These commands become globally available once you `npm install -g northwest`.
-
-### `northwest make <app-name>`
-
-**Usage:**
-
-```bash
-northwest make my-app
-```
-
-This command makes your NW.js app with the scaffolding described in the [structure](#structure) section.
 
 ### `northwest seed <platform> <seed>`
 
