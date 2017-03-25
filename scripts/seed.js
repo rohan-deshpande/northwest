@@ -10,6 +10,7 @@ const spawn = require('cross-spawn');
 const src = "src";
 const platform = process.argv[2];
 const seed = process.argv[3];
+const options = process.argv[4];
 const allowedCommands = [
   'create-react-app',
   'vue',
@@ -140,15 +141,13 @@ function seedFromNpmPackage(seed) {
  * @return void
  */
 function seedFromCommand(seed) {
-  let cmd = seed.split(" ");
-
-  // ensure that the final argument is to seed into the src directory.
-  cmd.push('./src');
+  let opt = seed.split(" ");
+  let cmd = ensureAllowed(opt.shift());
 
   // spawns the command if it is whitelisted and passes its arguments
   spawn.sync(
-    ensureAllowed(cmd.shift()),
-    [cmd],
+    cmd,
+    opt,
     { stdio: 'inherit' }
   );
 }

@@ -124,11 +124,21 @@ This argument defines the platform which you will seed from, there are three cho
 
 `<seed>`
 
-The repository (url), package (npm package name) or command you wish to seed from. In the case of using commands to seed, you can only choose from the following supported commands
+The repository (url), package (npm package name) or command you wish to seed from. 
+
+In the case of using commands to seed, it is expected that you will have the package which exposes the command installed globally. Northwest currently supports
 
 * `create-react-app`
 * `vue`
 * `ng`
+
+For all of the above, the command's target must be the `src` directory (see [`nw module`](#nw-module) for more info). You may pass any other options to your command, but remember the `<seed>` needs to be passed as a single argument, so you'll need to wrap it in quotes.
+
+Here are some examples:
+
+* `northwest seed cmd "create-react-app src"`
+* `northwest seed cmd "vue init webpack src"`
+*  `northwest seed cmd "ng new src"`
 
 If you would like more commands to be supported, please open a PR. 
 
@@ -136,7 +146,7 @@ If you would like more commands to be supported, please open a PR.
 
 After seeding you'll get a `nw` ES6 module placed in your `src` which exports an instance of the `Nw` class. This class contains `getters` for easily accessing the NW.js `nw` object and other associated objects such as `gui`, `Window` as well as standard node modules like `fs` and `path`. It's basically designed to be a helper class that wraps NW.js and node functionality. 
 
-Some seeds might require you to place this module in a certain directory in order for it to be transpiled correctly, for example, `create-react-app` requires you to place it in its `src` directory (so that will be `src/src` after you seed). Feel free to customise the class as you see fit. 
+Some seeds might require you to place this module in a certain directory in order for it to be transpiled correctly, for example, `create-react-app` requires you to place it in its `src` directory (so that will be `src/src` after you seed), so make sure you do that before importing it or you may get errors. Feel free to customise the module as you see fit. 
 
 ### Scripts
 
