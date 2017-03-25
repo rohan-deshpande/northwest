@@ -6,7 +6,7 @@
 
 ## Installation
 
-```
+```bash
 npm install -g northwest
 ```
 
