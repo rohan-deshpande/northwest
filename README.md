@@ -250,9 +250,9 @@ Many seeds that use `webpack` will auto launch your app in the browser when you 
 
 Set the `BROWSER=none` environment variable in your `.env` file
 
-###### `vue init`
+###### `vue`
 
-Set `autoOpenBrowser: false` in `config/index.js`
+If you are using the `webpack` template, set `autoOpenBrowser: false` in `config/index.js`
 
 ###### `lean/phaser-es6-webpack`
 
@@ -266,4 +266,4 @@ Add `open: false` to `new BrowserSyncPlugin` constructor options in `webpack.con
 
 ## Credits
 
-Thanks goes to [@dominikwilkowski](https://github.com/dominikwilkowski) for help with making my first node CLI!
+Thanks goes to [@dominikwilkowski](https://github.com/dominikwilkowski) for the node tips!
