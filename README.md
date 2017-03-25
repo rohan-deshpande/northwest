@@ -20,7 +20,7 @@ npm install -g northwest
 
 This example uses [`create-react-app`](https://github.com/facebookincubator/create-react-app) via the `northwest seed cmd` command. You can also [`seed`](#seed) from a git repository or an npm package.
 
-```
+```bash
 npm install -g northwest
 northwest make my-app
 cd my-app
@@ -101,7 +101,7 @@ These commands become globally available once you `npm install -g northwest`.
 
 **Usage:**
 
-```
+```bash
 northwest make my-app
 ```
 
@@ -111,7 +111,7 @@ This command makes your NW.js app with the scaffolding described in the [structu
 
 **Usage:**
 
-```
+```bash
 cd my-app
 northwest seed git https://github.com/lean/phaser-es6-webpack.git
 ```
@@ -144,7 +144,7 @@ For all of the above, the command's target must be the `src` directory (see [`nw
 
 * `northwest seed cmd "create-react-app src"`
 * `northwest seed cmd "vue init webpack src"`
-*  `northwest seed cmd "ng new src"`
+* `northwest seed cmd "ng new src"`
 
 If you would like more commands to be supported, please open a PR.
 
@@ -168,7 +168,7 @@ This script will always set your `process.env.NODE_ENV` to `'development'`.
 
 Each argument needs to be appended after `npm run dev --`, delimited by spaces and set with `=` eg.,
 
-```
+```bash
 npm run dev -- main=index.html static=../src/media
 ```
 
@@ -199,13 +199,13 @@ This script will always set your `process.env.NODE_ENV` to `'production'`.
 
 Each argument needs to be appended after `npm run release --`, delimited by spaces and set with `=` eg.,
 
-```
+```bash
 npm run release -- app=src/build manifest=app/release.package.json
 ```
 
 If you wish to pass custom arguments to `nwjs-builder` simply append these after `nwbuild=` eg,.
 
-```
+```bash
 npm run release -- nwbuild=-p win32,win64,osx32,osx64,linux32,linux64 --executable-name "My App"
 ```
 
@@ -221,14 +221,14 @@ npm run release -- nwbuild=-p win32,win64,osx32,osx64,linux32,linux64 --executab
 
 If your `seed` has scripts of its own, such as `npm run start` and you get sick of running both one after the other, feel free to modify your northwest app's scripts to accomodate. For example, if you wanted to start an app created with `create-react-app` and dev a `northwest` app at the same time, you could modify the `northwest` dev script to
 
-```
+```bash
 "dev": "npm run start --prefix src | northwest dev -- m=http://localhost:3000"
 
 ```
 
 In the above example, the `main` property of the NW.js manifest will be saved after the first time you've run this command, so the above could be shortened to
 
-```
+```bash
 "dev": "npm run start --prefix src | northwest dev"
 ```
 
@@ -236,7 +236,7 @@ You can then pass arguments to `dev` normally.
 
 The same approach can be taken for releasing. If you have some presets which you always want to release with, simply update the `release` script to suit your means eg.,
 
-```
+```bash
 "release": "nortwest release -- nwbuild=-p osx64,win64,linux64"
 ```
 
