@@ -10,6 +10,12 @@
 npm install -g northwest
 ```
 
+## Requirements
+
+* `node >= 5.12.0`
+* `npm >= 3.8.6`
+
+
 ## Quickstart
 
 This example uses [`create-react-app`](https://github.com/facebookincubator/create-react-app) via the `northwest seed cmd` command. You can also [`seed`](#seed) from a git repository or an npm package.
@@ -93,7 +99,7 @@ These commands become globally available once you `npm install -g northwest`.
 
 #### `northwest make <app-name>`
 
-usage:
+**Usage:**
 
 ```
 northwest make my-app
@@ -103,7 +109,7 @@ This command makes your NW.js app with the scaffolding described in the [structu
 
 #### `northwest seed <platform> <seed>`
 
-usage:
+**Usage:**
 
 ```
 cd my-app
@@ -134,7 +140,7 @@ In the case of using commands to seed, it is expected that you will have the pac
 
 For all of the above, the command's target must be the `src` directory (see [`nw module`](#nw-module) for more info). You may pass any other options to your command, but remember the `<seed>` needs to be passed as a single argument, so you'll need to wrap it in quotes.
 
-Here are some examples:
+**Usage:**
 
 * `northwest seed cmd "create-react-app src"`
 * `northwest seed cmd "vue init webpack src"`
@@ -254,3 +260,10 @@ Add `open: false` to `new BrowserSyncPlugin` constructor options in `webpack.con
 
 **Note!** There will probably be a slight delay between the dev server starting and your NW.js app connecting to it, you might see a 404 not found page at first but this should fix itself in a few seconds. 
 
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
+
+## Credits
+
+Thanks goes to [@dominikwilkowski](https://github.com/dominikwilkowski) for help with making my first node CLI!
