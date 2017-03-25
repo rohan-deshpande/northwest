@@ -1,6 +1,6 @@
 # Northwest
 
-#### CLI for making NW.js apps with the JavaScript boilerplate of your choice
+#### CLI for making [NW.js](https://nwjs.io/) apps with the JavaScript boilerplate of your choice
 
 > Journey to the north west child, there, you will find solace.
 
@@ -97,7 +97,7 @@ Your JavaScript app. Populated via the [`northwest seed`](#seed) command. Will a
 
 These commands become globally available once you `npm install -g northwest`.
 
-#### `northwest make <app-name>`
+### `northwest make <app-name>`
 
 **Usage:**
 
@@ -107,7 +107,7 @@ northwest make my-app
 
 This command makes your NW.js app with the scaffolding described in the [structure](#structure) section.
 
-#### `northwest seed <platform> <seed>`
+### `northwest seed <platform> <seed>`
 
 **Usage:**
 
@@ -158,7 +158,7 @@ Some seeds might require you to place this module in a certain directory in orde
 
 These commands are available from inside any `northwest` app and are included in your `package.json` after you run `northwest make <app-name>`.
 
-#### `npm run dev -- <arguments>`
+### `npm run dev -- <arguments>`
 
 Runs the NW.js app with the installed version of NW.js. You can pass a number of arguments to this script to configure the NW.js manifest before starting the app.
 
@@ -187,7 +187,7 @@ Please note that if your seed uses `webpack` and gets served from a dev server, 
 * `version`, `v`
     * The version of your app, will set the `version` property of the app's manifest. Defaults to `0.0.1`.
 
-#### `npm run release -- <app> <manifest> <nwbuild>`
+### `npm run release -- <app> <manifest> <nwbuild>`
 
 This will create releases for the OS of your choice using the [`nwjs-builder`](https://github.com/evshiron/nwjs-builder) package.
 
@@ -221,14 +221,14 @@ npm run release -- nwbuild=-p win32,win64,osx32,osx64,linux32,linux64 --executab
 
 If your `seed` has scripts of its own, such as `npm run start` and you get sick of running both one after the other, feel free to modify your northwest app's scripts to accomodate. For example, if you wanted to start an app created with `create-react-app` and dev a `northwest` app at the same time, you could modify the `northwest` dev script to
 
-```bash
+```json
 "dev": "npm run start --prefix src | northwest dev -- m=http://localhost:3000"
 
 ```
 
 In the above example, the `main` property of the NW.js manifest will be saved after the first time you've run this command, so the above could be shortened to
 
-```bash
+```json
 "dev": "npm run start --prefix src | northwest dev"
 ```
 
@@ -236,7 +236,7 @@ You can then pass arguments to `dev` normally.
 
 The same approach can be taken for releasing. If you have some presets which you always want to release with, simply update the `release` script to suit your means eg.,
 
-```bash
+```json
 "release": "nortwest release -- nwbuild=-p osx64,win64,linux64"
 ```
 
@@ -266,4 +266,6 @@ Add `open: false` to `new BrowserSyncPlugin` constructor options in `webpack.con
 
 ## Credits
 
-Thanks goes to [@dominikwilkowski](https://github.com/dominikwilkowski) for the node tips!
+**Northwest** was built with [Atom](https://atom.io/), [MacDown](https://macdown.uranusjr.com/) and [iTerm2](https://www.iterm2.com/). 
+
+Special thanks to [@dominikwilkowski](https://github.com/dominikwilkowski) for the node tips!
