@@ -1,6 +1,6 @@
 # Northwest
 
-#### CLI & micro-framework for building NW.js apps with the JavaScript boilerplate of your choice
+#### CLI for making NW.js apps with the JavaScript boilerplate of your choice
 
 > Journey to the north west child, there, you will find solace.
 
@@ -36,7 +36,7 @@ npm run start --prefix src | npm run dev -- m=http://localhost:3000
 
 ## But... Electron?
 
-Electron is no doubt an excellent alternative to NW.js with a huge community behind it and a lot of support. However, it lacks some features which NW.js provides, namely better [source code protection](http://docs.nwjs.io/en/latest/For%20Users/Advanced/Protect%20JavaScript%20Source%20Code/) options. The Electron team has consistently stated that they will [not be offering it in the near future](https://github.com/electron/electron/issues/3041). So basically, if you want source code protection for your desktop JavaScript app, NW.js is currently the only tool to provide it out of the box. 
+Electron is no doubt an excellent alternative to NW.js with a huge community behind it and a lot of support. However, it lacks some features which NW.js provides, namely better [source code protection](http://docs.nwjs.io/en/latest/For%20Users/Advanced/Protect%20JavaScript%20Source%20Code/) options. The Electron team has consistently stated that they will [not be offering it in the near future](https://github.com/electron/electron/issues/3041). So basically, if you want source code protection for your desktop JavaScript app, NW.js is currently the only tool to provide it out of the box.
 
 ## Understanding NW.js
 
@@ -116,21 +116,21 @@ cd my-app
 northwest seed git https://github.com/lean/phaser-es6-webpack.git
 ```
 
-Seeding creates the JavaScript source for your app. You get three different ways in which to seed your app, all of which will populate your `src` directory with the desired source files. You will also have a module, `Nw` placed in the `src` directory which can be imported by your seed to gain access to node & NW.js objects and methods. Check the 
+Seeding creates the JavaScript source for your app. You get three different ways in which to seed your app, all of which will populate your `src` directory with the desired source files. You will also have a module, `Nw` placed in the `src` directory which can be imported by your seed to gain access to node & NW.js objects and methods. Check the
 
 ##### Arguments
 
 `<platform>`
 
-This argument defines the platform which you will seed from, there are three choices 
+This argument defines the platform which you will seed from, there are three choices
 
-* `git` - seeds from a git repository 
-* `npm` - seeds from an npm package 
+* `git` - seeds from a git repository
+* `npm` - seeds from an npm package
 * `cmd` - seeds from a whitelisted command
 
 `<seed>`
 
-The repository (url), package (npm package name) or command you wish to seed from. 
+The repository (url), package (npm package name) or command you wish to seed from.
 
 In the case of using commands to seed, it is expected that you will have the package which exposes the command installed globally. Northwest currently supports
 
@@ -146,13 +146,13 @@ For all of the above, the command's target must be the `src` directory (see [`nw
 * `northwest seed cmd "vue init webpack src"`
 *  `northwest seed cmd "ng new src"`
 
-If you would like more commands to be supported, please open a PR. 
+If you would like more commands to be supported, please open a PR.
 
 #### Nw Module
 
-After seeding you'll get a `nw` ES6 module placed in your `src` which exports an instance of the `Nw` class. This class contains `getters` for easily accessing the NW.js `nw` object and other associated objects such as `gui`, `Window` as well as standard node modules like `fs` and `path`. It's basically designed to be a helper class that wraps NW.js and node functionality. 
+After seeding you'll get a `nw` ES6 module placed in your `src` which exports an instance of the `Nw` class. This class contains `getters` for easily accessing the NW.js `nw` object and other associated objects such as `gui`, `Window` as well as standard node modules like `fs` and `path`. It's basically designed to be a helper class that wraps NW.js and node functionality.
 
-Some seeds might require you to place this module in a certain directory in order for it to be transpiled correctly, for example, `create-react-app` requires you to place it in its `src` directory (so that will be `src/src` after you seed), so make sure you do that before importing it or you may get errors. Feel free to customise the module as you see fit. 
+Some seeds might require you to place this module in a certain directory in order for it to be transpiled correctly, for example, `create-react-app` requires you to place it in its `src` directory (so that will be `src/src` after you seed), so make sure you do that before importing it or you may get errors. Feel free to customise the module as you see fit.
 
 ### Scripts
 
@@ -172,7 +172,7 @@ Each argument needs to be appended after `npm run dev --`, delimited by spaces a
 npm run dev -- main=index.html static=../src/media
 ```
 
-Arguments which affect the manifest will be saved and do not need to be passed again when running `dev`. 
+Arguments which affect the manifest will be saved and do not need to be passed again when running `dev`.
 
 Please note that if your seed uses `webpack` and gets served from a dev server, passing `css`, `js`, or `static` arguments is totally unnecessary as these files will be stored in the dev server. In this instance, you can simply pass the server URL to `main` and everything should just work.
 
@@ -210,9 +210,9 @@ npm run release -- nwbuild=-p win32,win64,osx32,osx64,linux32,linux64 --executab
 ```
 
 * `app`, `a`
-	* The path to the app to release, defaults to `./app` but can be any directory containing an `index.html` file, for example `src/build` 
+	* The path to the app to release, defaults to `./app` but can be any directory containing an `index.html` file, for example `src/build`
 * `nwbuild`, `n`
-	* Prefix to delimit any custom [`nwjs-builder`](https://github.com/evshiron/nwjs-builder#usage) arguments you wish to pass 
+	* Prefix to delimit any custom [`nwjs-builder`](https://github.com/evshiron/nwjs-builder#usage) arguments you wish to pass
 	* **Note!** The output directory, `-o`, is autoset by this command, so there's no need to pass it here
 
 #### Advanced Usage
@@ -232,7 +232,7 @@ In the above example, the `main` property of the NW.js manifest will be saved af
 "dev": "npm run start --prefix src | northwest dev"
 ```
 
-You can then pass arguments to `dev` normally. 
+You can then pass arguments to `dev` normally.
 
 The same approach can be taken for releasing. If you have some presets which you always want to release with, simply update the `release` script to suit your means eg.,
 
@@ -248,7 +248,7 @@ Many seeds that use `webpack` will auto launch your app in the browser when you 
 
 ###### `create-react-app`
 
-Set the `BROWSER=none` environment variable in your `.env` file 
+Set the `BROWSER=none` environment variable in your `.env` file
 
 ###### `vue init`
 
@@ -258,7 +258,7 @@ Set `autoOpenBrowser: false` in `config/index.js`
 
 Add `open: false` to `new BrowserSyncPlugin` constructor options in `webpack.config.js`
 
-**Note!** There will probably be a slight delay between the dev server starting and your NW.js app connecting to it, you might see a 404 not found page at first but this should fix itself in a few seconds. 
+**Note!** There will probably be a slight delay between the dev server starting and your NW.js app connecting to it, you might see a 404 not found page at first but this should fix itself in a few seconds.
 
 ## License
 
