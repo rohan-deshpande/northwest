@@ -1,6 +1,6 @@
 {
   "name": "northwest",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CLI for making NW.js apps with the JavaScript boilerplate of your choice",
   "repository": {
     "type": "git",
