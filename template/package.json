@@ -5,7 +5,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "nw": "0.23.1-sdk",
+    "nw": "0.31.3-sdk",
     "nwjs-builder": "^1.14.0",
     "fs-extra": "^2.0.0",
     "ejs": "^2.5.6"
